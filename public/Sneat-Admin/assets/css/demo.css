@@ -111,3 +111,11 @@
   text-align: center;
   margin-top: 1rem;
 }
+/* .dt-custom-btn {
+  background-color: #696cff !important;
+  border: none !important;
+} */
+.dt-search {
+  padding-right: 10px;
+}
+
