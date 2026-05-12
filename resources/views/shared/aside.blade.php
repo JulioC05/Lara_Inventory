@@ -98,7 +98,7 @@
 
             <li class="menu-item">
               <a
-                href="{{ route("categorias")}}"
+                href="{{ route("categorias.index")}}"
                 class="menu-link">
                 <i class="menu-icon tf-icons bx bx-category"></i>
                 <div class="text-truncate" data-i18n="Categorias">Categorias</div>
