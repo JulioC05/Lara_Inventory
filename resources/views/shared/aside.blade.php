@@ -125,7 +125,7 @@
 
             <li class="menu-item">
               <a
-                href="{{ route("usuarios")}}"
+                href="{{ route("usuarios.index")}}"
                 class="menu-link">
                 <i class="menu-icon tf-icons bx bx-user"></i>
                 <div class="text-truncate" data-i18n="Productos">Usuarios</div>

@@ -6,7 +6,7 @@ use App\Http\Controllers\Clientes;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DetalleVentas;
 use App\Http\Controllers\Productos;
-use App\Http\Controllers\Usuarios;
+use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\Ventas;
 use Illuminate\Support\Facades\Route;
 
@@ -37,7 +37,7 @@ Route::prefix('detalle')->middleware('auth')->group(function () {
 // });
 
 Route::middleware('auth')->group(function () {
-    Route::resource('categorias', CategoriaController::class)->except(['create', 'edit', 'show']);;
+    Route::resource('categorias', CategoriaController::class)->except(['create', 'edit', 'show']);
 
     Route::put('categorias/{categoria}/estado', [CategoriaController::class, 'cambiarEstado'])->name('categorias.estado');
 });
@@ -51,5 +51,11 @@ Route::prefix('clientes')->middleware('auth')->group(function () {
 });
 
 Route::prefix('usuarios')->middleware('auth')->group(function () {
-    Route::get('/', [Usuarios::class, 'index'])->name('usuarios');
+    Route::get('/', [UsuarioController::class, 'index'])->name('usuarios');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::resource('usuarios', UsuarioController::class)->except(['create', 'edit', 'show']);
+
+    Route::put('usuarios/{usuario}/estado', [UsuarioController::class, 'cambiarEstado'])->name('usuarios.estado');
 });

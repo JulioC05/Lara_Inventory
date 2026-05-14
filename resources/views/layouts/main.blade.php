@@ -113,6 +113,8 @@
 
     <script src="{{ asset('Sneat-Admin/assets/js/delete-modal.js') }}"></script>
     <script src="{{ asset('Sneat-Admin/assets/js/categorias/edit-modal.js') }}"></script>
+    <script src="{{ asset('Sneat-Admin/assets/js/usuarios/edit-modal.js') }}"></script>
+    <script src="{{ asset('Sneat-Admin/assets/js/preventModalSubmit.js') }}"></script>
 </body>
 
 </html>
