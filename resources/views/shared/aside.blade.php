@@ -1,9 +1,9 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-          <div class="app-brand demo">
-            <a href="index.html" class="app-brand-link">
-              <span class="app-brand-logo demo">
+    <div class="app-brand demo">
+        <a href="index.html" class="app-brand-link">
+            <span class="app-brand-logo demo">
                 <span class="text-primary">
-                  {{-- <svg
+                    {{-- <svg
                     width="25"
                     viewBox="0 0 25 42"
                     version="1.1"
@@ -51,85 +51,39 @@
                     </g>
                   </svg> --}}
                 </span>
-              </span>
-              <span class="app-brand-text demo menu-text fw-bold ms-2 " style="font-size: 1.5rem">La Económica</span>
-            </a>
+            </span>
+            <span class="app-brand-text demo menu-text fw-bold ms-2 " style="font-size: 1.5rem">La Económica</span>
+        </a>
 
-            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
-              <i class="bx bx-chevron-left d-block d-xl-none align-middle"></i>
-            </a>
-          </div>
+        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+            <i class="bx bx-chevron-left d-block d-xl-none align-middle"></i>
+        </a>
+    </div>
 
-          <div class="menu-divider mt-0"></div>
+    <div class="menu-divider mt-0"></div>
 
-          <div class="menu-inner-shadow"></div>
+    <div class="menu-inner-shadow"></div>
 
-          <ul class="menu-inner py-1">
-            <!-- Dashboards -->
-            <li class="menu-item">
-              <a
-                href="{{ route("home") }}"
-                class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-smile"></i>
-                <div class="text-truncate" data-i18n="Dashboard">Dashboard</div>
-              </a>
-            </li>
+    <ul class="menu-inner py-1">
+        <!-- Dashboard -->
+        @include('shared.menu-item.dashboard')
 
-            <!-- Layouts -->
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-layout"></i>
-                <div class="text-truncate" data-i18n="Ventas">Ventas</div>
-              </a>
+        {{-- Inventario --}}
+        @include('shared.menu-item.inventory')
 
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="{{ route("ventas-nueva")}}" class="menu-link">
-                    <div class="text-truncate" data-i18n="Vender Producto">Vender Producto</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="{{ route("detalle-venta")}}" class="menu-link">
-                    <div class="text-truncate" data-i18n="Consultar Ventas">Consultar Ventas</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
+        {{-- Ventas --}}
+        @include('shared.menu-item.sales')
 
-            <li class="menu-item">
-              <a
-                href="{{ route("categorias.index")}}"
-                class="menu-link">
-                <i class="menu-icon tf-icons bx bx-category"></i>
-                <div class="text-truncate" data-i18n="Categorias">Categorias</div>
-              </a>
-            </li>
+        {{-- Compras --}}
+        @include('shared.menu-item.purchases')
 
-            <li class="menu-item">
-              <a
-                href="{{ route("productos")}}"
-                class="menu-link">
-                <i class="menu-icon tf-icons bx bx-package"></i>
-                <div class="text-truncate" data-i18n="Productos">Productos</div>
-              </a>
-            </li>
+        {{-- Usuarios --}}
+        @include('shared.menu-item.users')
 
-            <li class="menu-item">
-              <a
-                href="{{ route("clientes")}}"
-                class="menu-link">
-                <i class="menu-icon tf-icons bx bxs-user-badge"></i>
-                <div class="text-truncate" data-i18n="Productos">Clientes</div>
-              </a>
-            </li>
+        {{-- Reportes --}}
+        @include('shared.menu-item.reports')
 
-            <li class="menu-item">
-              <a
-                href="{{ route("usuarios.index")}}"
-                class="menu-link">
-                <i class="menu-icon tf-icons bx bx-user"></i>
-                <div class="text-truncate" data-i18n="Productos">Usuarios</div>
-              </a>
-            </li>
+        {{-- Configuración --}}
+        {{-- @include('shared.menu-item.configuration') --}}
 
-        </aside>
+</aside>
