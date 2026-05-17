@@ -98,19 +98,6 @@ class CategoriaController extends Controller
      */
     public function destroy(Categoria $categoria)
     {
-        // if ($categoria->productos()->exists()) {
-
-        //     return back()->with(
-        //         'error',
-        //         'No se puede eliminar la categoría porque tiene productos asociados.'
-        //     );
-        // }
-
-        // $categoria->delete();
-
-        // return to_route('categorias')
-        //     ->with('success', 'Categoría eliminada correctamente.');
-
         $categoria->delete();
 
         return to_route('categorias.index')
@@ -123,9 +110,6 @@ class CategoriaController extends Controller
 
         $categoria->save();
 
-        return back()->with(
-            'success',
-            'Estado actualizado correctamente.'
-        );
+        return back()->with('success','Estado actualizado correctamente.');
     }
 }
