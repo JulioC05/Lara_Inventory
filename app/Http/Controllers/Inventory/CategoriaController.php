@@ -1,7 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Inventory;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Categoria\StoreCategoriaRequest;
+use App\Http\Requests\Categoria\UpdateCategoriaRequest;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,15 +33,11 @@ class CategoriaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCategoriaRequest $request)
     {
-        $validated = $request->validate([
-            'nombre' => 'required|string|max:100|unique:categorias,nombre',
-        ]);
-
         Categoria::create([
             'user_id' => Auth::id(),
-            'nombre' => trim($validated['nombre']),
+            'nombre' => trim($request['nombre']),
             'estado' => true
         ]);
 
@@ -66,19 +65,10 @@ class CategoriaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Categoria $categoria)
+    public function update(UpdateCategoriaRequest $request, Categoria $categoria)
     {
-        $validated = $request->validate([
-            'nombre' => [
-                'required',
-                'string',
-                'max:100',
-                'unique:categorias,nombre,' . $categoria->id
-            ]
-        ]);
-
-        $categoria->update([
-            'nombre' => trim($validated['nombre'])
+        $categoria->fill([
+            'nombre' => trim($request['nombre']),
         ]);
 
         if (!$categoria->isDirty()) {
@@ -88,6 +78,8 @@ class CategoriaController extends Controller
                 'No se realizaron cambios.'
             );
         }
+
+        $categoria->save();
 
         return to_route('categorias.index')
             ->with('success', 'Categoría actualizada correctamente.');

@@ -7,22 +7,25 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel1">Agregar Categoria</h5>
+                        <h5 class="modal-title" id="exampleModalLabel1">Agregar Usuario</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form class="needs-validation" novalidate action="{{ route('categorias.store') }}" method="POST">
+                    <form class="needs-validation" novalidate action="{{ route('marcas.store') }}" method="POST">
                         @csrf
                         <div class="modal-body">
                             <x-forms.input 
-                                label="Nombre de la categoria"
+                                label="Marca"
                                 name="nombre"
                                 id="nombre_create"
                                 type="text"
-                                placeholder="Ingrese una categoria"
-                                validacion="Ingrese una categoria"
+                                placeholder="Ingrese una marca"
+                                validacion="Ingrese una marca"
                                 bag="store"
                                 required
                             />
+                            {{-- <pre>
+{{ print_r($errors->store->all(), true) }}
+</pre> --}}
                             <button type="submit" class="btn btn-primary">Guardar</button>
                             <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
                                 Cancelar

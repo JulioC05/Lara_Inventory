@@ -10,15 +10,20 @@
                         <h5 class="modal-title" id="exampleModalLabel1">Editar Categoria</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                     <form id="formEditar" method="POST">
+                     <form class="needs-validation" novalidate id="formEditar" method="POST">
                         @csrf
                          @method('PUT')
                         <div class="modal-body">
-                            <div class="mb-6">
-                                <label class="form-label" for="nombre">Nombre de la categoria</label>
-                                <input type="text" class="form-control" id="editNombre" name="nombre"
-                                    placeholder="Ron..." />
-                            </div>
+                            <x-forms.input 
+                                label="Nombre de la categoria"
+                                name="nombre"
+                                id="editNombre"
+                                type="text"
+                                placeholder="Ingrese una categoria"
+                                validacion="Ingrese una categoria"
+                                bag="update"
+                                required
+                            />
                             <button type="submit" class="btn btn-primary">Actualizar</button>
                             <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
                                 Cancelar

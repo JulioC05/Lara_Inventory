@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->enum('tipo_persona', ['natural', 'juridica'])->default('natural');
             $table->string('tipo_documento')->nullable();
-            $table->string('numero_documento')->nullable()->unique();
+            $table->string('numero_documento')->nullable();
             $table->string('nombre');
             $table->string('apellido')->nullable();
             $table->string('telefono')->nullable();
@@ -25,6 +25,7 @@ return new class extends Migration
             $table->boolean('estado')->default(true);
             $table->timestamps();
             $table->softDeletes();
+            $table->unique(['numero_documento', 'deleted_at']);
         });
     }
 

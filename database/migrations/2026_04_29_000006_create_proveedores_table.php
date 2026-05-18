@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->string('razon_social');
-            $table->string('ruc')->unique();
+            $table->string('ruc');
             $table->string('contacto')->nullable();
             $table->string('telefono')->nullable();
             $table->string('email')->nullable();
@@ -23,6 +23,7 @@ return new class extends Migration
             $table->boolean('estado')->default(true);
             $table->timestamps();
             $table->softDeletes();
+            $table->unique(['ruc', 'deleted_at']);
         });
     }
 

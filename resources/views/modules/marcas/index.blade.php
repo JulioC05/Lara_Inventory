@@ -3,7 +3,6 @@
 @section('titulo', $titulo)
 @section('content')
     <div class="content-wrapper">
-        {{-- <h1>Categorias</h1> --}}
         <div class="container-xxl flex-grow-1 container-p-y">
             <div class="card">
                 <div class="card-datatable text-nowrap">
@@ -11,7 +10,7 @@
                         <div class="row card-header flex-column flex-md-row pb-0">
                             <div
                                 class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
-                                <h5 class="card-title mb-0 text-md-start text-center">Categorias</h5>
+                                <h5 class="card-title mb-0 text-md-start text-center">Marcas</h5>
                                 <div class="btn-group flex-wrap mb-0">
                                     <button type="button" data-bs-toggle="modal" data-bs-target="#createModal"
                                         class="btn create-new btn-primary">
@@ -47,10 +46,10 @@
                                     </td>
                                     <td>
                                         <button type="button" data-bs-toggle="modal" data-bs-target="#editModal"
-                                            data-url="{{ route('categorias.update', $item->id) }}"
+                                            data-url="{{ route('marcas.update', $item->id) }}"
                                             data-nombre="{{ $item->nombre }}" class="btn btn-info btn-edit"><i
                                                 class="bx bx-edit fs-4"></i></button>
-                                        <form action="{{ route('categorias.estado', $item->id) }}" method="POST"
+                                        <form action="{{ route('marcas.estado', $item->id) }}" method="POST"
                                             class="d-inline">
                                             @csrf
                                             @method('PUT')
@@ -60,7 +59,7 @@
                                             </button>
                                         </form>
                                         <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                            data-url="{{ route('categorias.destroy', $item->id) }}"
+                                            data-url="{{ route('marcas.destroy', $item->id) }}"
                                             data-nombre="{{ $item->nombre }}" class="btn btn-danger btn-delete"><i
                                                 class="bx bx-trash fs-4"></i></button>
                                     </td>
@@ -78,8 +77,8 @@
                     </table>
                 </div>
             </div>
-            @include('modules.categorias.modals.create')
-            @include('modules.categorias.modals.edit')
+            @include('modules.marcas.modals.create')
+            @include('modules.marcas.modals.edit')
             @include('components.modals.delete')
 
             @if ($errors->store->any())

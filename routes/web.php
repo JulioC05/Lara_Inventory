@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\Inventory\CategoriaController;
 use App\Http\Controllers\Clientes;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DetalleVentas;
+use App\Http\Controllers\Inventory\MarcaController;
 use App\Http\Controllers\Productos;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\Ventas;
@@ -28,18 +29,16 @@ Route::prefix('detalle')->middleware('auth')->group(function () {
     Route::get('/detalle-venta', [DetalleVentas::class, 'index'])->name('detalle-venta');
 });
 
-// Route::prefix('categorias')->middleware('auth')->group(function(){
-//     Route::get('/', [Categorias::class, 'index'])->name('categorias');
-//     Route::get('/create', [Categorias::class, 'create'])->name('categorias.create');
-//     Route::post('/store', [Categorias::class, 'store'])->name('categorias.store');
-//     Route::get('/show/{id}', [Categorias::class, 'show'])->name('categorias.show');
-//     Route::delete('/destroy/{id}', [Categorias::class, 'destroy'])->name('categorias.destroy');
-// });
-
 Route::middleware('auth')->group(function () {
     Route::resource('categorias', CategoriaController::class)->except(['create', 'edit', 'show']);
 
     Route::put('categorias/{categoria}/estado', [CategoriaController::class, 'cambiarEstado'])->name('categorias.estado');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::resource('marcas', MarcaController::class)->except(['create', 'edit', 'show']);
+
+    Route::put('marcas/{marca}/estado', [MarcaController::class, 'cambiarEstado'])->name('marcas.estado');
 });
 
 Route::prefix('productos')->middleware('auth')->group(function () {
