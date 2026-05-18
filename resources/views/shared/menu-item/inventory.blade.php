@@ -16,7 +16,7 @@
             </a>
         </li>
         <li class="menu-item">
-            <a href="#" class="menu-link">
+            <a href="{{ route('marcas.index') }}" class="menu-link">
                 <div>Marcas</div>
             </a>
         </li>

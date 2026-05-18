@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('marcas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->string('nombre')->unique();
+            $table->string('nombre');
             $table->string('descripcion')->nullable();
             $table->boolean('estado')->default(true);
             $table->timestamps();
             $table->softDeletes();
+            $table->unique(['nombre', 'deleted_at']);
         });
     }
 
