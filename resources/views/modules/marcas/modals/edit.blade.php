@@ -17,7 +17,7 @@
                             <x-forms.input 
                                 label="Marca"
                                 name="nombre"
-                                id="editNombre"
+                                id="edit_nombre"
                                 type="text"
                                 placeholder="Ingrese una marca"
                                 validacion="Ingrese una marca"

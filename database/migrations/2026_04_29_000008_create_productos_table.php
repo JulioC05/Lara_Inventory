@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('stock')->default(0);
             $table->integer('stock_minimo')->default(5);
             $table->decimal('precio_compra', 10, 2);
+            $table->decimal('margen_ganancia', 5, 2)->default(20.00);
             $table->decimal('precio_venta', 10, 2);
             $table->enum('tipo_afectacion_igv', ['gravado', 'exonerado', 'inafecto'])->default('gravado');
             $table->decimal('porcentaje_igv', 5, 2)->default(18.00);
@@ -33,6 +34,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->unique(['nombre', 'deleted_at']);
+            $table->unique(['codigo_barras', 'deleted_at']);
         });
     }
 

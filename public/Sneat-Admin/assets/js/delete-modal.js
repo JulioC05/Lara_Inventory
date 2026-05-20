@@ -1,23 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('click', function (e) {
+    const boton = e.target.closest('.btn-delete');
 
-    const botonesEliminar = document.querySelectorAll('.btn-delete');
+    if (!boton) return;
 
-    botonesEliminar.forEach(boton => {
+    const url = boton.dataset.url;
+    const nombre = boton.dataset.nombre;
 
-        boton.addEventListener('click', function () {
+    const form = document.getElementById('formEliminar');
 
-            const url = this.dataset.url;
-            const nombre = this.dataset.nombre;
+    form.action = url;
 
-            const form = document.getElementById('formEliminar');
-
-            form.action = url;
-
-            document.getElementById('textoEliminar')
-                .innerText = `¿Estas seguro de eliminar "${nombre}"?`;
-
-        });
-
-    });
-
+    document.getElementById('textoEliminar').innerText = `¿Estas seguro de eliminar "${nombre}"?`;
+  });
 });

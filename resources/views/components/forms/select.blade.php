@@ -2,29 +2,24 @@
     'label',
     'name',
     'id' => '',
-    'type' => 'text',
     'value' => '',
-    'placeholder' => '',
     'validacion' => '',
     'bag' => 'default',
-    'class' => '',
+    'class' => ''
 ])
-
 
 <div class="{{ $class ? $class : 'mb-6' }}">
     <label for="{{ $name }}" class="form-label">
         {{ $label }}
     </label>
-    <input type="{{ $type ?? 'text' }}" id="{{ $id }}" name="{{ $name }}"
-        @if ($type !== 'file') value="{{ old($name, $value ?? '') }}" @endif
-        placeholder="{{ $placeholder ?? '' }}"
+    <select name="{{ $name }}" id="{{ $id }}"
         {{ $attributes->merge([
             'class' => 'form-control ' . ($errors->$bag->has($name) ? 'is-invalid' : ''),
-        ]) }}>
+        ]) }}>{{ $slot }}</select>
     @if ($errors->$bag->has($name))
         <div class="invalid-feedback">
             {{ $errors->$bag->first($name) }}
-        </div>
+        </div>  
     @else
         <div class="invalid-feedback">
             {{ $validacion }}

@@ -6,7 +6,7 @@
 
     <ul class="menu-sub">
         <li class="menu-item">
-            <a href="#" class="menu-link">
+            <a href="{{ route('productos.index') }}" class="menu-link">
                 <div>Productos</div>
             </a>
         </li>
