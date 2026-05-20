@@ -115,7 +115,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /*
     |--------------------------------------------------------------------------
-    | PREVIEW NUEVA IMAGEN
+    | PREVIEW NUEVA IMAGEN - CREATE
+    |--------------------------------------------------------------------------
+    */
+
+  const inputImagenCreate = document.getElementById('create_imagen');
+
+  const previewImagenCreate = document.getElementById('preview_create_imagen');
+
+  if (inputImagenCreate && previewImagenCreate) {
+    inputImagenCreate.addEventListener('change', function (e) {
+      const file = e.target.files[0];
+
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.onload = function (event) {
+        previewImagenCreate.src = event.target.result;
+
+        previewImagenCreate.style.display = 'block';
+      };
+
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /*
+    |--------------------------------------------------------------------------
+    | PREVIEW NUEVA IMAGEN - EDITAR
     |--------------------------------------------------------------------------
     */
 

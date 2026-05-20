@@ -7,7 +7,7 @@ use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DetalleVentas;
 use App\Http\Controllers\Inventory\MarcaController;
 use App\Http\Controllers\Inventory\ProductoController;
-use App\Http\Controllers\Productos;
+use App\Http\Controllers\Sales\VentaController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\Ventas;
 use Illuminate\Support\Facades\Route;
@@ -22,9 +22,12 @@ Route::middleware("auth")->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
-Route::prefix('ventas')->middleware('auth')->group(function () {
-    Route::get('/nueva-venta', [Ventas::class, 'index'])->name('ventas-nueva');
+Route::middleware('auth')->group(function () {
+    Route::resource('ventas', VentaController::class)->except(['create', 'edit', 'show']);
+
+    Route::put('ventas/{categoria}/estado', [VentaController::class, 'cambiarEstado'])->name('ventas.estado');
 });
+
 
 Route::prefix('detalle')->middleware('auth')->group(function () {
     Route::get('/detalle-venta', [DetalleVentas::class, 'index'])->name('detalle-venta');

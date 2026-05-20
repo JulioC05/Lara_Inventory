@@ -88,12 +88,12 @@
                             <div class="row g-6">
                                 <div class="d-flex align-items-start align-items-sm-center gap-6 pb-4 border-bottom">
                                     <img src="{{ asset('storage/images/default-product.jpg' ) }}" alt="product-avatar"
-                                        class="d-block w-px-200 h-px-200 rounded" id="preview_edit_imagen">
+                                        class="d-block w-px-200 h-px-200 rounded" id="preview_create_imagen">
                                     <div class="button-wrapper">
-                                        <label for="edit_imagen" class="btn btn-primary me-3 mb-4" tabindex="0">
+                                        <label for="create_imagen" class="btn btn-primary me-3 mb-4" tabindex="0">
                                             <span class="d-none d-sm-block">Subir una nueva imagen</span>
                                             <i class="icon-base bx bx-upload d-block d-sm-none"></i>
-                                            <x-forms.input label="" name="imagen" id="edit_imagen"
+                                            <x-forms.input label="" name="imagen" id="create_imagen"
                                                 type="file" validacion="Ingrese una imagen" bag="update"
                                                 hidden="" class="account-file-input"
                                                 accept="image/png, image/jpeg, image/jpg" />
