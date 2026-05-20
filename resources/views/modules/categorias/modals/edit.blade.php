@@ -17,7 +17,7 @@
                             <x-forms.input 
                                 label="Nombre de la categoria"
                                 name="nombre"
-                                id="editNombre"
+                                id="edit_nombre"
                                 type="text"
                                 placeholder="Ingrese una categoria"
                                 validacion="Ingrese una categoria"

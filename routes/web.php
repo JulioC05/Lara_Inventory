@@ -6,6 +6,7 @@ use App\Http\Controllers\Clientes;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DetalleVentas;
 use App\Http\Controllers\Inventory\MarcaController;
+use App\Http\Controllers\Inventory\ProductoController;
 use App\Http\Controllers\Productos;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\Ventas;
@@ -41,8 +42,10 @@ Route::middleware('auth')->group(function () {
     Route::put('marcas/{marca}/estado', [MarcaController::class, 'cambiarEstado'])->name('marcas.estado');
 });
 
-Route::prefix('productos')->middleware('auth')->group(function () {
-    Route::get('/', [Productos::class, 'index'])->name('productos');
+Route::middleware('auth')->group(function () {
+    Route::resource('productos', ProductoController::class)->except(['create', 'edit', 'show']);
+
+    Route::put('productos/{producto}/estado', [ProductoController::class, 'cambiarEstado'])->name('productos.estado');
 });
 
 Route::prefix('clientes')->middleware('auth')->group(function () {

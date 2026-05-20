@@ -151,31 +151,6 @@ if (a) {
             ]
           }
         ]
-        // buttons: [
-        //   {
-        //     extend: 'collection',
-        //     text: 'Exportar',
-        //     className: 'btn btn-label-secondary dropdown-toggle',
-        //     buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-        //   }
-        // ]
-        // buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-        // buttons: [
-        //   {
-        //     extend: 'collection',
-        //     text: '<i class="bx bx-export me-2"></i>Exportar',
-        //     className: 'btn btn-label-secondary dropdown-toggle',
-        //     buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-        //   }
-        // ]
-        // buttons: [
-        //   {
-        //     extend: 'collection',
-        //     text: 'Exportar',
-        //     className: 'btn btn-label-secondary dropdown-toggle',
-        //     buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-        //   }
-        // ]
       },
       bottomStart: {
         rowClass: 'row mx-3 justify-content-between',
@@ -206,7 +181,8 @@ if (a) {
       details: {
         display: DataTable.Responsive.display.modal({
           header: function (row) {
-            return 'Details of ' + row.data()[1]; // ahora es array, no objeto
+            // return 'Details of ' + row.data()[2]; // ahora es array, no objeto
+            return 'Detalles'; // ahora es array, no objeto
           }
         }),
         type: 'column',

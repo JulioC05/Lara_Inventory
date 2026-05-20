@@ -2,25 +2,23 @@
     'label',
     'name',
     'id' => '',
-    'type' => 'text',
+    'rows',
     'value' => '',
     'placeholder' => '',
     'validacion' => '',
     'bag' => 'default',
-    'class' => '',
+    'class' => ''
 ])
-
 
 <div class="{{ $class ? $class : 'mb-6' }}">
     <label for="{{ $name }}" class="form-label">
         {{ $label }}
     </label>
-    <input type="{{ $type ?? 'text' }}" id="{{ $id }}" name="{{ $name }}"
-        @if ($type !== 'file') value="{{ old($name, $value ?? '') }}" @endif
+    <textarea name="{{ $name }}" id="{{ $id }}" rows="{{ $rows }}"
         placeholder="{{ $placeholder ?? '' }}"
         {{ $attributes->merge([
             'class' => 'form-control ' . ($errors->$bag->has($name) ? 'is-invalid' : ''),
-        ]) }}>
+        ]) }}>{{ old($name, $value ?? '') }}</textarea>
     @if ($errors->$bag->has($name))
         <div class="invalid-feedback">
             {{ $errors->$bag->first($name) }}
