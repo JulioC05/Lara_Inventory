@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('cliente_id')->nullable()->constrained('clientes');
             $table->foreignId('user_id')->constrained();
             $table->foreignId('metodo_pago_id')->constrained('metodos_pago');
-            $table->string('numero_comprobante')->nullable();
-            $table->enum('tipo_comprobante', ['ticket', 'boleta', 'factura'])->default('ticket');
+            $table->string('numero_comprobante')->unique()->nullable();
+            $table->enum('tipo_comprobante', ['boleta', 'factura'])->default('boleta');
             $table->decimal('subtotal', 10, 2);
             $table->decimal('igv', 10, 2);
             $table->decimal('descuento', 10, 2)->default(0.00);

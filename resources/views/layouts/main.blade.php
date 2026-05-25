@@ -13,7 +13,7 @@
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('Sneat-Admin/assets/img/favicon/favicon.ico') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('Sneat-Admin/assets/img/favicon/logo-imagen.ico') }}" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -45,6 +45,9 @@
     <!-- endbuild -->
 
     <link rel="stylesheet" href="{{ asset('Sneat-Admin/assets/vendor/libs/apex-charts/apex-charts.css') }}" />
+
+    {{-- Tom-select --}}
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet" />
 
     <!-- Page CSS -->
 
@@ -95,6 +98,7 @@
 
     <script src="{{ asset('Sneat-Admin/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
     <script src="{{ asset('Sneat-Admin/assets/js/tables-datatables-advanced.js') }}"></script>
+    <script src="{{ asset('Sneat-Admin/assets/js/ventas-detalles.js') }}"></script>
 
     <!-- endbuild -->
 
@@ -119,6 +123,9 @@
     {{-- <script src="{{ asset('Sneat-Admin/assets/js/marcas/edit-modal.js') }}"></script> --}}
     {{-- <script src="{{ asset('Sneat-Admin/assets/js/productos/edit-modal.js') }}"></script> --}}
     <script src="{{ asset('Sneat-Admin/assets/js/preventModalSubmit.js') }}"></script>
+
+    {{-- Tom-select --}}
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
     <x-alerts.toasts />
 

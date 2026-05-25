@@ -87,7 +87,7 @@
 
                             <div class="row g-6">
                                 <div class="d-flex align-items-start align-items-sm-center gap-6 pb-4 border-bottom">
-                                    <img src="{{ asset('storage/images/default-product.jpg' ) }}" alt="product-avatar"
+                                    <img src="{{ asset('storage/productos/default-product.jpg' ) }}" alt="product-avatar"
                                         class="d-block w-px-200 h-px-200 rounded" id="preview_create_imagen">
                                     <div class="button-wrapper">
                                         <label for="create_imagen" class="btn btn-primary me-3 mb-4" tabindex="0">
