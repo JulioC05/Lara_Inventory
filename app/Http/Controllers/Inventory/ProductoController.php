@@ -42,7 +42,7 @@ class ProductoController extends Controller
 
             $validated['imagen'] = $request->file('imagen')->store('productos', 'public');
         } else {
-            $validated['imagen'] = 'images/default-product.jpg';
+            $validated['imagen'] = 'productos/default-product.jpg';
         }
 
         $validated['user_id'] = $request->user()->id;
