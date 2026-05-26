@@ -21,5 +21,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrapFive();
+        // Cambiamos a 'pinggy-free.link' para que coincida exactamente con tu túnel
+        // if (str_contains(request()->getHost(), 'pinggy-free.link')) {
+        //     \Illuminate\Support\Facades\URL::forceScheme('https');
+        // }
     }
 }

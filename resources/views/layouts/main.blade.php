@@ -124,9 +124,13 @@
     {{-- <script src="{{ asset('Sneat-Admin/assets/js/productos/edit-modal.js') }}"></script> --}}
     <script src="{{ asset('Sneat-Admin/assets/js/preventModalSubmit.js') }}"></script>
 
+    {{-- HTML5-QRCODE --}}
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
     {{-- Tom-select --}}
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
+    
     <x-alerts.toasts />
 
     @stack('scripts')
