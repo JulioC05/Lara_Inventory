@@ -150,11 +150,12 @@
                                 <h6 class="mb-1">Contacto:</h6>
                                 {{-- <h6 class="mb-1"><a href=" javascript:void(0)" data-bs-toggle="modal" data-bs-target="#editUser">Edit</a></h6> --}}
                             </div>
-                            <p class=" mb-1">Corre: {{ $venta->cliente->email }}</p>
+                            <p class=" mb-1">Correo: {{ $venta->cliente->email }}</p>
                             <p class=" mb-0">Telefono: {{ $venta->cliente->telefono }}</p>
                         </div>
                     </div>
-                    <a href="{{ route('ventas.index') }}" class="btn btn-secondary">
+                    <a href="{{ request('redirect') === 'reportes' ? route('reportes.ventas') : route('ventas.index') }}"
+                        class="btn btn-secondary">
                         Volver
                     </a>
                 </div>

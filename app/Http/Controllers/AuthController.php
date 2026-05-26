@@ -59,7 +59,7 @@ class AuthController extends Controller
             'email' => 'Cuenta inactiva'
         ]);
     }
-        return to_route('home');
+        return to_route('dashboard');
     }
 
     public function crearAdmin(){

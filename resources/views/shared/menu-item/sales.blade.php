@@ -6,12 +6,12 @@
 
     <ul class="menu-sub">
         <li class="menu-item">
-            <a href="{{ route('ventas.index') }}" class="menu-link">
+            <a href="{{ route('ventas.create') }}" class="menu-link">
                 <div>Nueva venta</div>
             </a>
         </li>
         <li class="menu-item">
-            <a href="#" class="menu-link">
+            <a href="{{ route('ventas.index') }}" class="menu-link">
                 <div>Historial de ventas</div>
             </a>
         </li>

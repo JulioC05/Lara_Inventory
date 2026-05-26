@@ -20,10 +20,10 @@
                 <div>Marcas</div>
             </a>
         </li>
-        <li class="menu-item">
+        {{-- <li class="menu-item">
             <a href="#" class="menu-link">
                 <div>Movimientos</div>
             </a>
-        </li>
+        </li> --}}
     </ul>
 </li>

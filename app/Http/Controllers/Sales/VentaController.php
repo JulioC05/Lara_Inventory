@@ -287,7 +287,7 @@ class VentaController extends Controller
 
                     'tipo_movimiento' => 'entrada',
 
-                    'motivo' => 'anulacion',
+                    'motivo' => 'anulacion_venta',
 
                     'referencia' => $venta->numero_comprobante,
 

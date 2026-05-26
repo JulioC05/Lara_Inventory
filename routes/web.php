@@ -3,10 +3,10 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Inventory\CategoriaController;
 use App\Http\Controllers\Clientes;
-use App\Http\Controllers\Dashboard;
-use App\Http\Controllers\DetalleVentas;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Inventory\MarcaController;
 use App\Http\Controllers\Inventory\ProductoController;
+use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\Sales\VentaController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
@@ -17,18 +17,27 @@ Route::get('/', [AuthController::class, 'index'])->name('login');
 Route::post('/logear', [AuthController::class, 'logear'])->name('logear');
 
 Route::middleware("auth")->group(function () {
-    Route::get('/home', [Dashboard::class, 'index'])->name('home');
+    // Route::get('/home', [Dashboard::class, 'index'])->name('home');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });
+
+Route::middleware('auth')->group(function () {
+    Route::prefix('reportes')->name('reportes.')->group(function () {
+        Route::get('/ventas', [ReportController::class, 'ventas'])->name('ventas');
+        Route::get('/movimientos-stock',[ReportController::class, 'movimientosStock'])->name('movimientos-stock');
+    });
+});
+
+// Route::prefix('reportes')->name('reportes.')->group(function () {
+//     Route::get('/productos-mas-vendidos', [ReportController::class, 'productosMasVendidos'])->name('productos-mas-vendidos');
+//     Route::get('/movimientos-stock', [ReportController::class, 'movimientosStock'])->name('movimientos-stock');
+// });
 
 Route::middleware('auth')->group(function () {
     Route::resource('ventas', VentaController::class)->except(['edit', 'update']);
 
     // Route::put('ventas/{categoria}/estado', [VentaController::class, 'cambiarEstado'])->name('ventas.estado');
-});
-
-Route::prefix('detalle')->middleware('auth')->group(function () {
-    Route::get('/detalle-venta', [DetalleVentas::class, 'index'])->name('detalle-venta');
 });
 
 Route::middleware('auth')->group(function () {
@@ -51,10 +60,6 @@ Route::middleware('auth')->group(function () {
 
 Route::prefix('clientes')->middleware('auth')->group(function () {
     Route::get('/', [Clientes::class, 'index'])->name('clientes');
-});
-
-Route::prefix('usuarios')->middleware('auth')->group(function () {
-    Route::get('/', [UsuarioController::class, 'index'])->name('usuarios');
 });
 
 Route::middleware('auth')->group(function () {

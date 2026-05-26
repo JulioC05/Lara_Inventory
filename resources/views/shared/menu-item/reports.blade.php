@@ -6,7 +6,7 @@
 
     <ul class="menu-sub">
         <li class="menu-item">
-            <a href="#" class="menu-link">
+            <a href="{{ route('reportes.ventas') }}" class="menu-link">
                 <div>Ventas</div>
             </a>
         </li>
@@ -16,14 +16,14 @@
             </a>
         </li>
         <li class="menu-item">
-            <a href="#" class="menu-link">
+            <a href="{{ route('reportes.movimientos-stock') }}" class="menu-link">
                 <div>Inventario</div>
             </a>
         </li>
-        <li class="menu-item">
+        {{-- <li class="menu-item">
             <a href="#" class="menu-link">
                 <div>Productos más vendidos</div>
             </a>
-        </li>
+        </li> --}}
     </ul>
 </li>
