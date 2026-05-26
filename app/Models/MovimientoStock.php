@@ -27,4 +27,9 @@ class MovimientoStock extends Model
         'referencia',
 
     ];
+
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class);
+    }
 }

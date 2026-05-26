@@ -130,6 +130,7 @@
     <x-alerts.toasts />
 
     @stack('scripts')
+    @yield('page-script')
 </body>
 
 </html>
