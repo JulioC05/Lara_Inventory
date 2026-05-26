@@ -37,12 +37,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($items as $item)
+                            @foreach ($usuarios as $item)
                                 <tr>
                                     <td></td>
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->email }}</td>
-                                    <td>{{ $item->rol }}</td>
+                                    <td>{{ $item->getRoleNames()->first() }}</td>
                                     <td>
                                         <span
                                             class="badge {{ $item->activo ? 'bg-label-primary' : 'bg-label-danger' }} me-1">
@@ -54,6 +54,7 @@
                                         <button type="button" data-bs-toggle="modal" data-bs-target="#editModal"
                                             data-url="{{ route('usuarios.update', $item->id) }}"
                                             data-name="{{ $item->name }}" data-email="{{ $item->email }}"
+                                            data-role="{{ $item->getRoleNames()->first() }}"
                                             class="btn btn-info btn-edit-user"><i class="bx bx-edit fs-4"></i></button>
                                         @if (Auth::id() !== $item->id)
                                             <form action="{{ route('usuarios.estado', $item->id) }}" method="POST"

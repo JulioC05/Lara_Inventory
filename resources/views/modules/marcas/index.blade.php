@@ -44,25 +44,29 @@
                                             {{ $item->estado ? 'Activo' : 'Inactivo' }}
                                         </span>
                                     </td>
-                                    <td>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#editModal"
-                                            data-url="{{ route('marcas.update', $item->id) }}"
-                                            data-nombre="{{ $item->nombre }}" class="btn btn-info btn-edit"><i
-                                                class="bx bx-edit fs-4"></i></button>
-                                        <form action="{{ route('marcas.estado', $item->id) }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            @method('PUT')
-                                            <button type="submit"
-                                                class="btn {{ $item->estado ? 'btn-warning' : 'btn-success' }}">
-                                                <i class="bx {{ $item->estado ? 'bx-block' : 'bx-check' }} fs-4"></i>
-                                            </button>
-                                        </form>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                            data-url="{{ route('marcas.destroy', $item->id) }}"
-                                            data-nombre="{{ $item->nombre }}" class="btn btn-danger btn-delete"><i
-                                                class="bx bx-trash fs-4"></i></button>
-                                    </td>
+                                    @role('Admin|Almacen')
+                                        <td>
+                                            <button type="button" data-bs-toggle="modal" data-bs-target="#editModal"
+                                                data-url="{{ route('marcas.update', $item->id) }}"
+                                                data-nombre="{{ $item->nombre }}" class="btn btn-info btn-edit"><i
+                                                    class="bx bx-edit fs-4"></i></button>
+                                            <form action="{{ route('marcas.estado', $item->id) }}" method="POST"
+                                                class="d-inline">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit"
+                                                    class="btn {{ $item->estado ? 'btn-warning' : 'btn-success' }}">
+                                                    <i class="bx {{ $item->estado ? 'bx-block' : 'bx-check' }} fs-4"></i>
+                                                </button>
+                                            </form>
+                                            @role('Admin')
+                                                <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                    data-url="{{ route('marcas.destroy', $item->id) }}"
+                                                    data-nombre="{{ $item->nombre }}" class="btn btn-danger btn-delete"><i
+                                                        class="bx bx-trash fs-4"></i></button>
+                                            @endrole
+                                        </td>
+                                    @endrole
                                 </tr>
                             @endforeach
                         </tbody>

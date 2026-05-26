@@ -15,8 +15,8 @@ class UsuarioController extends Controller
     public function index()
     {
         $titulo = 'Administrar Usuarios';
-        $items = User::latest()->get();
-        return view("modules.usuarios.index", compact('titulo', 'items'));
+        $usuarios = User::with('roles')->latest()->get();
+        return view("modules.usuarios.index", compact('titulo', 'usuarios'));
     }
 
     /**
@@ -35,16 +35,21 @@ class UsuarioController extends Controller
         $validated = $request->validateWithBag('store', [
             'store_name' => 'required|string|max:100',
             'store_email' => 'required|email|max:200|unique:users,email',
-            'password' => 'required|string|min:8|confirmed'
+            'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|exists:roles,name'
         ]);
 
 
-        User::create([
+        $user = User::create([
             'name' => trim($validated['store_name']),
             'email' => trim($validated['store_email']),
             'password' => Hash::make($validated['password']),
             'activo' => true
         ]);
+
+        $user->syncRoles(
+            $validated['role']
+        );
 
         return to_route('usuarios.index')
             ->with('success', 'Usuario creado correctamente.');
@@ -73,13 +78,28 @@ class UsuarioController extends Controller
     {
         $validated = $request->validateWithBag('update', [
             'edit_name' => 'required|string|max:100',
-            'edit_email' => 'required|email|max:200|unique:users,email,' . $usuario->id
+            'edit_email' => 'required|email|max:200|unique:users,email,' . $usuario->id,
+            'edit_role' => 'required|exists:roles,name'
         ]);
 
         $usuario->name = trim($validated['edit_name']);
         $usuario->email = trim($validated['edit_email']);
 
-        if (!$usuario->isDirty()) {
+        $roleActual = $usuario
+            ->getRoleNames()
+            ->first();
+
+        $sinCambiosUsuario = !$usuario->isDirty();
+
+        $sinCambiosRol = (
+            $roleActual === $validated['edit_role']
+        );
+
+        if (
+            $sinCambiosUsuario &&
+            $sinCambiosRol
+        ) {
+
             return back()->with(
                 'info',
                 'No se realizaron cambios.'
@@ -87,6 +107,20 @@ class UsuarioController extends Controller
         }
 
         $usuario->save();
+
+        if (
+            $usuario->id === auth()->id()
+        ) {
+
+            return back()->with(
+                'error',
+                'No puedes cambiar tu propio rol.'
+            );
+        }
+
+        $usuario->syncRoles(
+            $validated['edit_role']
+        );
 
         return back()->with('success', 'Usuario actualizado correctamente.');
     }
