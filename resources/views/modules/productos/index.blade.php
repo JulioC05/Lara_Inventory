@@ -12,13 +12,15 @@
                                 class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
                                 <h5 class="card-title mb-0 text-md-start text-center">Productos</h5>
                                 <div class="btn-group flex-wrap mb-0">
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#createModal"
-                                        class="btn create-new btn-primary">
-                                        <span class="d-flex align-items-center gap-2">
-                                            <i class="icon-base bx bx-plus icon-sm"></i>
-                                            <span class="d-none d-sm-inline-block">Añadir Nuevo</span>
-                                        </span>
-                                    </button>
+                                    @role('Admin|Almacen')
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#createModal"
+                                            class="btn create-new btn-primary">
+                                            <span class="d-flex align-items-center gap-2">
+                                                <i class="icon-base bx bx-plus icon-sm"></i>
+                                                <span class="d-none d-sm-inline-block">Añadir Nuevo</span>
+                                            </span>
+                                        </button>
+                                    @endrole
                                 </div>
                             </div>
                         </div>
@@ -36,7 +38,9 @@
                                 <th>Precio de Compra</th>
                                 <th>Precio de Venta</th>
                                 <th>Estado</th>
-                                <th width="150">Acciones</th>
+                                @role('Admin|Almacen')
+                                    <th width="150">Acciones</th>
+                                @endrole
                             </tr>
                         </thead>
                         <tbody>
@@ -96,38 +100,42 @@
                                             {{ $producto->estado ? 'Activo' : 'Inactivo' }}
                                         </span>
                                     </td>
-                                    <td>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#editModal"
-                                            data-url="{{ route('productos.update', $producto->id) }}"
-                                            data-id="{{ $producto->id }}"
-                                            data-categoria_id="{{ $producto->categoria_id }}"
-                                            data-marca_id="{{ $producto->marca_id }}"
-                                            data-nombre="{{ $producto->nombre }}"
-                                            data-codigo_barras="{{ $producto->codigo_barras }}"
-                                            data-descripcion="{{ $producto->descripcion }}"
-                                            data-contenido_ml="{{ $producto->contenido_ml }}"
-                                            data-graduacion_alcoholica="{{ $producto->graduacion_alcoholica }}"
-                                            data-imagen="{{ $producto->imagen ? asset('storage/' . $producto->imagen) : asset('images/default-product.png') }}"
-                                            data-stock="{{ $producto->stock }}"
-                                            data-stock_minimo="{{ $producto->stock_minimo }}"
-                                            data-precio_compra="{{ $producto->precio_compra }}"
-                                            data-margen_ganancia="{{ $producto->margen_ganancia }}"
-                                            data-precio_venta="{{ $producto->precio_venta }}"
-                                            class="btn btn-info btn-edit"><i class="bx bx-edit fs-4"></i></button>
-                                        <form action="{{ route('productos.estado', $producto->id) }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            @method('PUT')
-                                            <button type="submit"
-                                                class="btn {{ $producto->estado ? 'btn-warning' : 'btn-success' }}">
-                                                <i class="bx {{ $producto->estado ? 'bx-block' : 'bx-check' }} fs-4"></i>
-                                            </button>
-                                        </form>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                            data-url="{{ route('productos.destroy', $producto->id) }}"
-                                            data-nombre="{{ $producto->nombre }}" class="btn btn-danger btn-delete"><i
-                                                class="bx bx-trash fs-4"></i></button>
-                                    </td>
+                                    @role('Admin|Almacen')
+                                        <td>
+                                            <button type="button" data-bs-toggle="modal" data-bs-target="#editModal"
+                                                data-url="{{ route('productos.update', $producto->id) }}"
+                                                data-id="{{ $producto->id }}"
+                                                data-categoria_id="{{ $producto->categoria_id }}"
+                                                data-marca_id="{{ $producto->marca_id }}"
+                                                data-nombre="{{ $producto->nombre }}"
+                                                data-codigo_barras="{{ $producto->codigo_barras }}"
+                                                data-descripcion="{{ $producto->descripcion }}"
+                                                data-contenido_ml="{{ $producto->contenido_ml }}"
+                                                data-graduacion_alcoholica="{{ $producto->graduacion_alcoholica }}"
+                                                data-imagen="{{ $producto->imagen ? asset('storage/' . $producto->imagen) : asset('images/default-product.png') }}"
+                                                data-stock="{{ $producto->stock }}"
+                                                data-stock_minimo="{{ $producto->stock_minimo }}"
+                                                data-precio_compra="{{ $producto->precio_compra }}"
+                                                data-margen_ganancia="{{ $producto->margen_ganancia }}"
+                                                data-precio_venta="{{ $producto->precio_venta }}"
+                                                class="btn btn-info btn-edit"><i class="bx bx-edit fs-4"></i></button>
+                                            <form action="{{ route('productos.estado', $producto->id) }}" method="POST"
+                                                class="d-inline">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit"
+                                                    class="btn {{ $producto->estado ? 'btn-warning' : 'btn-success' }}">
+                                                    <i class="bx {{ $producto->estado ? 'bx-block' : 'bx-check' }} fs-4"></i>
+                                                </button>
+                                            </form>
+                                            @role('Admin')
+                                                <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                    data-url="{{ route('productos.destroy', $producto->id) }}"
+                                                    data-nombre="{{ $producto->nombre }}" class="btn btn-danger btn-delete"><i
+                                                        class="bx bx-trash fs-4"></i></button>
+                                            @endrole
+                                        </td>
+                                    @endrole
                                 </tr>
                             @endforeach
                         </tbody>
@@ -142,7 +150,9 @@
                                 <th>Precio de Compra</th>
                                 <th>Precio de Venta</th>
                                 <th>Estado</th>
-                                <th width="150">Acciones</th>
+                                @role('Admin|Almacen')
+                                    <th width="150">Acciones</th>
+                                @endrole
                             </tr>
                         </tfoot>
                     </table>

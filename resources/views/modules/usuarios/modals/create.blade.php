@@ -44,6 +44,29 @@
                                     </div>
                                 @endif
                             </div>
+                            <div class="mb-6">
+                                <label class="form-label">
+                                    Rol
+                                </label>
+                                <select name="role"
+                                    class="form-select {{ $errors->store->has('role') ? 'is-invalid' : '' }}">
+                                    <option value="Cajero">
+                                        Cajero
+                                    </option>
+                                    <option value="Almacen">
+                                        Almacen
+                                    </option>
+                                </select>
+                                @if ($errors->store->has('role'))
+                                    <div class="invalid-feedback">
+                                        {{ $errors->store->first('role') }}
+                                    </div>
+                                @else
+                                    <div class="invalid-feedback">
+                                        Seleccione un rol
+                                    </div>
+                                @endif
+                            </div>
                             <div class="mb-6 form-password-toggle">
                                 <label class="form-label" for="password">Contraseña</label>
                                 <div class="input-group input-group-merge">

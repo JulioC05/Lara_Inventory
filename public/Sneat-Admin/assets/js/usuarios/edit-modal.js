@@ -8,6 +8,16 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('editName').value = this.dataset.name;
 
       document.getElementById('editEmail').value = this.dataset.email;
+
+      document.getElementById('editRole').value = this.dataset.role;
+
+      const contenedorRole = document.getElementById('contenedorRole');
+
+      if (this.dataset.role === 'Admin') {
+        contenedorRole.style.display = 'none'; // Lo oculta si es Admin
+      } else {
+        contenedorRole.style.display = 'block'; // Lo muestra para los demás
+      }
     });
   });
 });

@@ -1,3 +1,4 @@
+@role('Admin')
 <li class="menu-item">
     <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons bx bx-group"></i>
@@ -17,3 +18,4 @@
         </li>
     </ul>
 </li>
+@endrole

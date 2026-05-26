@@ -44,6 +44,36 @@
                                     </div>
                                 @endif
                             </div>
+                            @php
+
+                                $role = $item->getRoleNames()->first();
+
+                            @endphp
+
+                                <div class="mb-6" id="contenedorRole">
+                                    <label class="form-label">
+                                        Rol
+                                    </label>
+                                    <select name="edit_role" id="editRole"
+                                        class="form-select {{ $errors->update->has('edit_role') ? 'is-invalid' : '' }}">
+                                        <option value="Cajero" @selected($role === 'Cajero')>
+                                            Cajero
+                                        </option>
+                                        <option value="Almacen" @selected($role === 'Almacen')>
+                                            Almacen
+                                        </option>
+                                    </select>
+                                    @if ($errors->update->has('edit_role'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->update->first('edit_role') }}
+                                        </div>
+                                    @else
+                                        <div class="invalid-feedback">
+                                            Ingrese un correo valido
+                                        </div>
+                                    @endif
+                                </div>
+
                             <button type="submit" class="btn btn-primary">Guardar</button>
                             <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
                                 Cancelar
