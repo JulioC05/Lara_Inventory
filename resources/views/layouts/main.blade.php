@@ -12,6 +12,9 @@
 
     <meta name="description" content="" />
 
+    {{-- Manifest --}}
+    <link rel="manifest" href="{{ asset('manifest.json') }}" crossorigin="use-credentials">
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('Sneat-Admin/assets/img/favicon/logo-imagen.ico') }}" />
 
@@ -130,11 +133,27 @@
     {{-- Tom-select --}}
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
-    
+
     <x-alerts.toasts />
 
     @stack('scripts')
     @yield('page-script')
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(r => console.log(r))
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('SW activo:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('Error SW:', error);
+                    });
+            });
+        }
+        
+    </script>
 </body>
 
 </html>
