@@ -43,7 +43,7 @@ class DashboardController extends Controller
         )
             ->sum('cantidad');
 
-        $productosBajoStock = Producto::where('stock', '<=', 5)->count();
+        $productosBajoStock = Producto::whereColumn('stock','<=','stock_minimo')->count();
 
         /*
 |--------------------------------------------------------------------------
