@@ -16,18 +16,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::firstOrCreate(
-            ['email' => env('ADMIN_EMAIL', 'admin@admin.com')],
-            [
-                'name' => 'Admin',
-                'password' => Hash::make(env('ADMIN_PASSWORD', 'admin123')),
-                'activo' => true,
-                'rol' => 'admin'
-            ]
-        );
+        // User::firstOrCreate(
+        //     ['email' => env('ADMIN_EMAIL', 'admin@admin.com')],
+        //     [
+        //         'name' => 'Admin',
+        //         'password' => Hash::make(env('ADMIN_PASSWORD', 'admin123')),
+        //         'activo' => true,
+        //         'rol' => 'admin'
+        //     ]
+        // );
         $this->call([
+            RoleSeeder::class,
+            UserSeeder::class,
             MetodosPagoSeeder::class,
             ClienteSeeder::class,
+            CategoriaSeeder::class,
+            MarcaSeeder::class,
+            ProductoSeeder::class,
+            VentaSeeder::class,
             // Aquí irán tus otros seeders más adelante...
         ]);
     }

@@ -15,31 +15,47 @@ class ClienteSeeder extends Seeder
     {
         $clientes = [
             [
-                'user_id' => 1, // <--- Agregado para que no falle la integridad
-                'nombre' => 'Clientes Varios',
+                'nombre' => 'Cliente Varios',
                 'tipo_documento' => 'DNI',
                 'numero_documento' => '00000000',
                 'telefono' => null,
+                'direccion' => null,
                 'email' => null,
-                'direccion' => 'Venta Mostrador',
+                'user_id' => 1,
+                'estado' => true,
             ],
+
             [
-                'user_id' => 1, // <--- Registrado por el Admin
-                'nombre' => 'Juan Carlos Pérez',
+                'nombre' => 'Juan Pérez',
                 'tipo_documento' => 'DNI',
-                'numero_documento' => '45781236',
+                'numero_documento' => '74851236',
                 'telefono' => '987654321',
-                'email' => 'juan.perez@gmail.com',
-                'direccion' => 'Av. Los Próceres 123, Santiago de Surco',
+                'direccion' => 'Lima',
+                'email' => 'juan@example.com',
+                'user_id' => 1,
+                'estado' => true,
             ],
+
             [
-                'user_id' => 1, // <--- Registrado por el Admin
-                'nombre' => 'Inversiones Discoteca Midnight S.A.C.',
+                'nombre' => 'María López',
+                'tipo_documento' => 'DNI',
+                'numero_documento' => '74125896',
+                'telefono' => '912345678',
+                'direccion' => 'Lima',
+                'email' => 'maria@example.com',
+                'user_id' => 1,
+                'estado' => true,
+            ],
+
+            [
+                'nombre' => 'Inversiones Luna SAC',
                 'tipo_documento' => 'RUC',
-                'numero_documento' => '20601234567',
-                'telefono' => '014455667',
-                'email' => 'compras@midnight.pe',
-                'direccion' => 'Calle Las Pizzas 456, Miraflores',
+                'numero_documento' => '20123456789',
+                'telefono' => '915555555',
+                'direccion' => 'San Isidro',
+                'email' => 'contacto@luna.com',
+                'user_id' => 1,
+                'estado' => true,
             ],
         ];
 
