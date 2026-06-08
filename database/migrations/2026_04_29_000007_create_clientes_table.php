@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('numero_documento')->nullable();
             $table->string('nombre');
             $table->string('apellido')->nullable();
+            $table->string('razon_social')->nullable();
             $table->string('telefono')->nullable();
             $table->string('direccion')->nullable();
             $table->string('email')->nullable();
