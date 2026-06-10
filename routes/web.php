@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Inventory\MarcaController;
 use App\Http\Controllers\Inventory\ProductoController;
 use App\Http\Controllers\Reports\ReportController;
+use App\Http\Controllers\Sales\ClienteController;
 use App\Http\Controllers\Sales\VentaController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
@@ -34,8 +35,6 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('ventas', VentaController::class)->except(['edit', 'update']);
-
-    // Route::put('ventas/{categoria}/estado', [VentaController::class, 'cambiarEstado'])->name('ventas.estado');
 });
 
 Route::middleware('auth')->group(function () {
@@ -56,9 +55,11 @@ Route::middleware('auth')->group(function () {
     Route::put('productos/{producto}/estado', [ProductoController::class, 'cambiarEstado'])->name('productos.estado');
 });
 
-// Route::prefix('clientes')->middleware('auth')->group(function () {
-//     Route::get('/', [Clientes::class, 'index'])->name('clientes');
-// });
+Route::middleware('auth')->group(function () {
+    Route::resource('clientes', ClienteController::class)->except(['create', 'edit', 'show']);
+
+    Route::put('clientes/{cliente}/estado', [ClienteController::class, 'cambiarEstado'])->name('clientes.estado');
+});
 
 Route::middleware('auth')->group(function () {
     Route::resource('usuarios', UsuarioController::class)->except(['create', 'edit', 'show']);

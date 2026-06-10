@@ -48,8 +48,9 @@ class ClienteSeeder extends Seeder
             ],
 
             [
-                'nombre' => 'Inversiones Luna SAC',
+                'razon_social' => 'Inversiones Luna SAC',
                 'tipo_documento' => 'RUC',
+                'tipo_persona' => 'juridica',
                 'numero_documento' => '20123456789',
                 'telefono' => '915555555',
                 'direccion' => 'San Isidro',
