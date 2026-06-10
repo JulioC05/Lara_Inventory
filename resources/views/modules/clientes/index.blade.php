@@ -52,7 +52,8 @@
                                     <td>
                                         @if ($item->tipo_persona === 'juridica')
                                             <div class="fw-semibold">
-                                                {{ $item->razon_social }}
+                                                {{-- {{ $item->razon_social }} --}}
+                                                {{ $item->nombre_completo }}
                                             </div>
 
                                             <small class="text-muted">
@@ -60,8 +61,9 @@
                                             </small>
                                         @else
                                             <div class="fw-semibold">
-                                                {{ $item->nombre }}
-                                                {{ $item->apellido }}
+                                                {{-- {{ $item->nombre }}
+                                                {{ $item->apellido }} --}}
+                                                {{ $item->nombre_completo }}
                                             </div>
 
                                             <small class="text-muted">
@@ -81,17 +83,16 @@
                                         <td>
                                             <button type="button" data-bs-toggle="modal" data-bs-target="#editModal"
                                                 data-url="{{ route('clientes.update', $item->id) }}"
-                                                data-id="{{ $item->id }}" 
-                                                data-tipo_persona="{{ $item->tipo_persona }}"
+                                                data-id="{{ $item->id }}" data-tipo_persona="{{ $item->tipo_persona }}"
                                                 data-tipo_documento="{{ $item->tipo_documento }}"
                                                 data-numero_documento="{{ $item->numero_documento }}"
-                                                data-nombre="{{ $item->nombre }}" 
-                                                data-apellido="{{ $item->apellido }}"
+                                                data-nombre="{{ $item->nombre }}" data-apellido="{{ $item->apellido }}"
                                                 data-razon_social="{{ $item->razon_social }}"
-                                                data-telefono="{{ $item->telefono }}"
-                                                data-direccion="{{ $item->direccion }}" 
-                                                data-email="{{ $item->email }}"
-                                                class="btn btn-info btn-edit"><i class="bx bx-edit fs-4"></i></button>
+                                                data-contacto_nombre="{{ $item->contacto_nombre }}"
+                                                data-contacto_cargo="{{ $item->contacto_cargo }}"
+                                                data-telefono="{{ $item->telefono }}" data-direccion="{{ $item->direccion }}"
+                                                data-email="{{ $item->email }}" class="btn btn-info btn-edit"><i
+                                                    class="bx bx-edit fs-4"></i></button>
                                             <form action="{{ route('clientes.estado', $item->id) }}" method="POST"
                                                 class="d-inline">
                                                 @csrf
@@ -168,3 +169,11 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+
+    @include('modules.clientes.scripts.create-form')
+
+    @include('modules.clientes.scripts.edit-form')
+
+@endpush

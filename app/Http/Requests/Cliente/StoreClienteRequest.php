@@ -41,26 +41,30 @@ class StoreClienteRequest extends FormRequest
 
             'numero_documento' => [
                 'nullable',
-                'max:20',
-                'unique:clientes,numero_documento,NULL,id,deleted_at,NULL'
+                Rule::unique('clientes')->where(function ($query) {
+                    return $query->where('tipo_documento', $this->tipo_documento)->whereNull('deleted_at');
+                }),
             ],
 
             // Persona natural
             'nombre' => [
-                'nullable',
-                'max:100'
+                'required_if:tipo_persona,natural|nullable|string|max:100'
             ],
 
             'apellido' => [
-                'nullable',
-                'max:100'
+                'required_if:tipo_persona,natural|nullable|string|max:100'
             ],
 
             // Empresa
             'razon_social' => [
-                'nullable',
-                'max:150'
+                'required_if:tipo_persona,juridica|nullable|string|max:200'
             ],
+
+            'nombre_comercial' => 'nullable|string|max:255',
+
+            'contacto_nombre'  => 'nullable|string|max:255',
+
+            'contacto_cargo'  => 'nullable|string|max:255',
 
             'telefono' => [
                 'nullable',
@@ -78,10 +82,10 @@ class StoreClienteRequest extends FormRequest
                 'max:100'
             ],
 
-            'estado' => [
-                'nullable',
-                'boolean'
-            ]
+            // 'estado' => [
+            //     'nullable',
+            //     'boolean'
+            // ]
         ];
     }
 
@@ -134,6 +138,46 @@ class StoreClienteRequest extends FormRequest
                         'Las empresas solo pueden usar RUC.'
                     );
                 }
+            }
+
+            //VALIDACIONES POR TIPO DE DOCUMENTO
+
+            $tipoDocumento =
+                $this->tipo_documento;
+
+            $numeroDocumento =
+                $this->numero_documento;
+
+            // =====================================
+            // DNI
+            // =====================================
+
+            if (
+                $tipoDocumento === 'DNI' &&
+                $numeroDocumento &&
+                strlen($numeroDocumento) != 8
+            ) {
+
+                $validator->errors()->add(
+                    'numero_documento',
+                    'El DNI debe tener 8 dígitos.'
+                );
+            }
+
+            // =====================================
+            // RUC
+            // =====================================
+
+            if (
+                $tipoDocumento === 'RUC' &&
+                $numeroDocumento &&
+                strlen($numeroDocumento) != 11
+            ) {
+
+                $validator->errors()->add(
+                    'numero_documento',
+                    'El RUC debe tener 11 dígitos.'
+                );
             }
         });
     }

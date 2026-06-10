@@ -40,10 +40,9 @@ class UpdateClienteRequest extends FormRequest
 
             'numero_documento' => [
                 'nullable',
-                'max:20',
-                Rule::unique('clientes', 'numero_documento')
-                    ->ignore($this->cliente)
-                    ->whereNull('deleted_at')
+                Rule::unique('clientes')->where(function ($query) {
+                    return $query->where('tipo_documento', $this->tipo_documento)->whereNull('deleted_at');
+                })->ignore($this->cliente),
             ],
 
             // Persona natural
@@ -135,6 +134,46 @@ class UpdateClienteRequest extends FormRequest
                         'Las empresas solo pueden usar RUC.'
                     );
                 }
+            }
+
+            //VALIDACIONES POR TIPO DE DOCUMENTO
+
+            $tipoDocumento =
+                $this->tipo_documento;
+
+            $numeroDocumento =
+                $this->numero_documento;
+
+            // =====================================
+            // DNI
+            // =====================================
+
+            if (
+                $tipoDocumento === 'DNI' &&
+                $numeroDocumento &&
+                strlen($numeroDocumento) != 8
+            ) {
+
+                $validator->errors()->add(
+                    'numero_documento',
+                    'El DNI debe tener 8 dígitos.'
+                );
+            }
+
+            // =====================================
+            // RUC
+            // =====================================
+
+            if (
+                $tipoDocumento === 'RUC' &&
+                $numeroDocumento &&
+                strlen($numeroDocumento) != 11
+            ) {
+
+                $validator->errors()->add(
+                    'numero_documento',
+                    'El RUC debe tener 11 dígitos.'
+                );
             }
         });
     }
