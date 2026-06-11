@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('proveedores', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->string('razon_social');
             $table->string('ruc');
-            $table->string('contacto')->nullable();
+            $table->string('razon_social');
+            $table->string('contacto_nombre')->nullable();
             $table->string('telefono')->nullable();
             $table->string('email')->nullable();
             $table->string('direccion')->nullable();
