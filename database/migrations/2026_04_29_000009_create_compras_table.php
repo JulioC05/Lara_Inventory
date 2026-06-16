@@ -16,12 +16,15 @@ return new class extends Migration
             $table->foreignId('proveedor_id')->constrained('proveedores');
             $table->foreignId('user_id')->constrained();
             $table->foreignId('metodo_pago_id')->constrained('metodos_pago');
-            $table->string('numero_comprobante')->nullable();
+            $table->string('numero_comprobante', 100)->nullable();
             $table->decimal('subtotal', 10, 2);
             $table->decimal('igv', 10, 2);
+            $table->decimal('isc', 10, 2)->default(0.00);
             $table->decimal('total', 10, 2);
-            $table->enum('estado', ['completada', 'anulada'])->default('completada');
-            $table->timestamp('fecha_compra')->useCurrent();
+            $table->enum('estado', ['pendiente', 'recibida', 'anulada'])->default('pendiente');
+            $table->dateTime('fecha_pedido');
+            $table->dateTime('fecha_entrega')->nullable(); // Nullable porque al inicio está "pendiente"
+            $table->text('observaciones')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

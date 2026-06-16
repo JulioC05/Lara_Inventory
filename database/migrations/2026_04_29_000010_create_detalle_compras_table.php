@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('cantidad');
             $table->decimal('precio_unitario_compra', 10, 2);
             $table->decimal('igv', 10, 2);
+            $table->decimal('isc', 10, 2)->default(0.00);
             $table->decimal('subtotal', 10, 2);
             $table->decimal('total', 10, 2);
             $table->timestamps();
