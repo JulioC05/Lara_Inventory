@@ -22,8 +22,8 @@ return new class extends Migration
             $table->decimal('isc', 10, 2)->default(0.00);
             $table->decimal('total', 10, 2);
             $table->enum('estado', ['pendiente', 'recibida', 'anulada'])->default('pendiente');
-            $table->date('fecha_pedido');
-            $table->date('fecha_entrega')->nullable(); // Nullable porque al inicio está "pendiente"
+            $table->dateTime('fecha_pedido');
+            $table->dateTime('fecha_entrega')->nullable(); // Nullable porque al inicio está "pendiente"
             $table->text('observaciones')->nullable();
             $table->timestamps();
             $table->softDeletes();

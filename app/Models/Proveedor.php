@@ -23,8 +23,8 @@ class Proveedor extends Model
         'estado'
     ];
 
-    // public function compras()
-    // {
-    //     return $this->hasMany(Compra::class);
-    // }
+    public function compras()
+    {
+        return $this->hasMany(Compra::class);
+    }
 }

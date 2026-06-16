@@ -6,7 +6,7 @@
         </a>
 
         <ul class="menu-sub">
-            {{-- <li class="menu-item {{ request()->routeIs('compras.create') ? 'active' : '' }}">
+            <li class="menu-item {{ request()->routeIs('compras.create') ? 'active' : '' }}">
                 <a href="{{ route('compras.create') }}" class="menu-link">
                     <div>Nueva compra</div>
                 </a>
@@ -16,7 +16,7 @@
                 <a href="{{ route('compras.index') }}" class="menu-link">
                     <div>Historial de compras</div>
                 </a>
-            </li> --}}
+            </li>
 
             <li class="menu-item {{ request()->routeIs('proveedores.*') ? 'active' : '' }}">
                 <a href="{{ route('proveedores.index') }}" class="menu-link">
