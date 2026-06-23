@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('reportes')->name('reportes.')->group(function () {
         Route::get('/ventas', [ReportController::class, 'ventas'])->name('ventas');
         Route::get('/movimientos-stock', [ReportController::class, 'movimientosStock'])->name('movimientos-stock');
+        Route::get('/compras', [ReportController::class, 'compras'])->name('compras');
     });
 });
 

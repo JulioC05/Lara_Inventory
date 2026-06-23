@@ -15,7 +15,7 @@
         @endrole
         @role('Admin')
         <li class="menu-item">
-            <a href="#" class="menu-link">
+            <a href="{{ route('reportes.compras') }}" class="menu-link">
                 <div>Compras</div>
             </a>
         </li>
