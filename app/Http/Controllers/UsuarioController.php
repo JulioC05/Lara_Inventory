@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UsuarioController extends Controller
 {
@@ -17,14 +18,6 @@ class UsuarioController extends Controller
         $titulo = 'Administrar Usuarios';
         $usuarios = User::with('roles')->latest()->get();
         return view("modules.usuarios.index", compact('titulo', 'usuarios'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -53,22 +46,6 @@ class UsuarioController extends Controller
 
         return to_route('usuarios.index')
             ->with('success', 'Usuario creado correctamente.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
     }
 
     /**
@@ -125,14 +102,6 @@ class UsuarioController extends Controller
         return back()->with('success', 'Usuario actualizado correctamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
-
     public function cambiarEstado(User $usuario)
     {
         if (Auth::id() === $usuario->id) {
@@ -150,5 +119,30 @@ class UsuarioController extends Controller
             'success',
             'Estado actualizado correctamente.'
         );
+    }
+
+    public function roles_accesos()
+    {
+        $titulo = 'Roles';
+        // Traemos los roles reales de tu base de datos (Admin, Cajero, Almacen)
+        $roles = Role::all();
+
+        // Definimos la matriz estática basada en tus reglas de negocio para la licorería
+        $matrizModulos = [
+            'Dashboard'           => ['Admin' => '✅', 'Cajero' => '✅', 'Almacen' => '✅'],
+            'Clientes'            => ['Admin' => 'CRUD', 'Cajero' => 'C/E/A', 'Almacen' => '❌'],
+            'Productos'           => ['Admin' => 'CRUD', 'Cajero' => 'Ver', 'Almacen' => 'C/E/A'],
+            'Categorías'          => ['Admin' => 'CRUD', 'Cajero' => '❌', 'Almacen' => 'C/E/A'],
+            'Marcas'              => ['Admin' => 'CRUD', 'Cajero' => '❌', 'Almacen' => 'C/E/A'],
+            'Ventas'              => ['Admin' => 'CRUD', 'Cajero' => 'CRUD', 'Almacen' => '❌'],
+            'Compras'             => ['Admin' => 'CRUD', 'Cajero' => '❌', 'Almacen' => 'CRUD'],
+            'Proveedores'         => ['Admin' => 'CRUD', 'Cajero' => '❌', 'Almacen' => 'C/E/A'],
+            'Usuarios'            => ['Admin' => 'CRUD', 'Cajero' => '❌', 'Almacen' => '❌'],
+            'Reportes Ventas'     => ['Admin' => '✅', 'Cajero' => '❌', 'Almacen' => '❌'],
+            'Reportes Inventario' => ['Admin' => '✅', 'Cajero' => '❌', 'Almacen' => '✅'],
+            'Reportes Compras'    => ['Admin' => '✅', 'Cajero' => '❌', 'Almacen' => '❌'],
+        ];
+
+        return view('modules.roles.index', compact('roles', 'matrizModulos', 'titulo'));
     }
 }

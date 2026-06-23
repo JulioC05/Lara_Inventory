@@ -81,6 +81,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('usuarios', UsuarioController::class)->except(['create', 'edit', 'show']);
+    Route::get('/roles', [UsuarioController::class, 'roles_accesos'])->name('usuarios.roles_accesos');
 
     Route::put('usuarios/{usuario}/estado', [UsuarioController::class, 'cambiarEstado'])->name('usuarios.estado');
 });

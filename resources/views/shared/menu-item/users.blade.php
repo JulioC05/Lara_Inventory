@@ -2,7 +2,7 @@
 <li class="menu-item">
     <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons bx bx-group"></i>
-        <div class="text-truncate" data-i18n="Ventas">Usuarios</div>
+        <div class="text-truncate" data-i18n="Ventas">Usuarios y Roles</div>
     </a>
 
     <ul class="menu-sub">
@@ -12,7 +12,7 @@
             </a>
         </li>
         <li class="menu-item">
-            <a href="#" class="menu-link">
+            <a href="{{ route('usuarios.roles_accesos') }}" class="menu-link">
                 <div>Roles</div>
             </a>
         </li>
