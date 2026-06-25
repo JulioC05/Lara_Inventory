@@ -9,6 +9,7 @@ use App\Models\MetodoPago;
 use App\Models\MovimientoStock;
 use App\Models\Producto;
 use App\Models\Proveedor;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -309,5 +310,21 @@ class CompraController extends Controller
             DB::rollBack();
             return to_route('compras.index')->with('error', 'No se pudo procesar la anulación de la compra.');
         }
+    }
+
+    public function descargarPdf($id)
+    {
+        // Cargamos la compra con sus relaciones
+        $compra = Compra::with(['proveedor', 'usuario', 'metodoPago', 'detalles.producto'])
+            ->findOrFail($id);
+
+        // Cargamos la vista exclusiva para el PDF
+        $pdf = Pdf::loadView('modules.compras.partials.pdf', compact('compra'));
+        $pdf->setPaper('a4', 'portrait');
+
+        // Nombre del archivo de salida
+        $nombreArchivo = 'compra_' . ($compra->numero_comprobante ?? 'oc-' . $compra->id) . '.pdf';
+
+        return $pdf->download($nombreArchivo);
     }
 }

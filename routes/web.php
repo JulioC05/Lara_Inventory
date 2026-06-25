@@ -47,12 +47,16 @@ Route::middleware(['auth'])->group(function () {
         // Ruta para anulación
         Route::put('compras/{compra}/anular', [CompraController::class, 'anular'])->name('compras.anular');
 
+        Route::get('/compras/{id}/pdf', [CompraController::class, 'descargarPdf'])->name('compras.pdf');
+
         Route::resource('compras', CompraController::class)->only(['index', 'create', 'store', 'show']);
     });
 });
 
 Route::middleware('auth')->group(function () {
     Route::resource('ventas', VentaController::class)->except(['edit', 'update']);
+
+    Route::get('/ventas/{id}/pdf', [VentaController::class, 'descargarPdf'])->name('ventas.pdf');
 });
 
 Route::middleware('auth')->group(function () {
