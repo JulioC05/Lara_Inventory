@@ -7,9 +7,14 @@
             <h4 class="fw-bold mb-0">
                 <span class="text-muted fw-light">Compras /</span> Detalle de la Compra N° #{{ $compra->id }}
             </h4>
-            <a href="{{ route('compras.index') }}" class="btn btn-label-secondary">
-                <i class="bx bx-arrow-back me-1"></i> Volver al Historial
-            </a>
+            <div class="d-flex align-content-center flex-wrap gap-2">
+                <a href="{{ route('compras.pdf', $compra->id) }}" class="btn btn-primary">
+                    <i class="bx bx-file me-1"></i> Descargar PDF
+                </a>
+                <a href="{{ route('compras.index') }}" class="btn btn-label-secondary">
+                    <i class="bx bx-arrow-back me-1"></i> Volver al Historial
+                </a>
+            </div>
         </div>
 
         <div class="row">
@@ -55,7 +60,8 @@
                                 <p class="mb-1"><strong>Contacto:</strong>
                                     {{ $compra->proveedor->contacto_nombre ?? 'No asignado' }}</p>
                                 <p class="mb-1"><strong>Teléfono:</strong> {{ $compra->proveedor->telefono ?? '-' }}</p>
-                                <p class="mb-0"><strong>Dirección:</strong> {{ $compra->proveedor->direccion ?? '-' }}</p>
+                                <p class="mb-0"><strong>Dirección:</strong> {{ $compra->proveedor->direccion ?? '-' }}
+                                </p>
                             </div>
 
                             <div class="col-xl-6 col-md-12">

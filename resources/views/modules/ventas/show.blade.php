@@ -23,15 +23,17 @@
                     {{-- <p class="mb-0">Aug 17, <span id="orderYear">2026</span>, 5:48 (ET)</p> --}}
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-2">
+                    <a href="{{ route('ventas.pdf', $venta->id) }}" class="btn btn-primary">
+                        <i class="bx bx-file me-1"></i> Descargar PDF
+                    </a>
+
                     @if ($venta->estado === 'completada')
-                        <form action="{{ route('ventas.destroy', $venta) }}" method="POST">
+                        <form action="{{ route('ventas.destroy', $venta) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
-
                             <button type="submit" class="btn btn-label-danger delete-order">
                                 Anular Venta
                             </button>
-
                         </form>
                     @endif
                 </div>

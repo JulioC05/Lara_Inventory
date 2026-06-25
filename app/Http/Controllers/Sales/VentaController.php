@@ -12,6 +12,7 @@ use App\Models\Venta;
 use App\Models\Producto;
 use Illuminate\Support\Facades\DB;
 use App\Services\VentaService;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class VentaController extends Controller
 {
@@ -176,5 +177,24 @@ class VentaController extends Controller
         return redirect()
             ->route('ventas.index')
             ->with('success', 'Venta anulada correctamente.');
+    }
+
+    public function descargarPdf($id)
+    {
+        // Recuperamos la venta con todas sus relaciones cargadas de golpe
+        $venta = Venta::with(['cliente', 'usuario', 'metodoPago', 'detalles.producto'])
+            ->findOrFail($id);
+
+        // Pasamos la data a una vista Blade exclusiva para el diseño del PDF
+        $pdf = Pdf::loadView('modules.ventas.partials.pdf', compact('venta'));
+
+        // Definimos el formato del papel (A4 estándar de escritorio)
+        $pdf->setPaper('a4', 'portrait');
+
+        // Formateamos el nombre del archivo: boleta_B001-00021.pdf
+        $nombreArchivo = strtolower($venta->tipo_comprobante) . '_' . ($venta->numero_comprobante ?? 'sin_numero') . '.pdf';
+
+        // Retornamos el flujo de descarga directa
+        return $pdf->download($nombreArchivo);
     }
 }
