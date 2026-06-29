@@ -222,3 +222,30 @@
 
   font-size: 14px;
 }
+
+@media print {
+    /* Ocultamos absolutamente toda la estructura e interfaz de Sneat */
+    #layout-menu, 
+    .layout-navbar, 
+    .content-wrapper, 
+    .footer, 
+    .btn,
+    .layout-page,
+    .layout-container {
+        display: none !important;
+    }
+
+    /* Forzamos a que el contenedor dinámico de la PWA sea el único visible */
+    #pwa-print-area {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+    }
+}
+
+/* En la pantalla normal del sistema, este contenedor temporal no debe verse nunca */
+#pwa-print-area {
+    display: none;
+}
