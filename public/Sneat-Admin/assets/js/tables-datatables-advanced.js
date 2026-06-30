@@ -92,6 +92,48 @@ if (a) {
                     className: 'dropdown-item',
                     exportOptions: {
                       columns: ':not(:last-child)'
+                    },
+                    action: function (e, dt, button, config) {
+                      // 1. Obtener el HTML limpio de la tabla filtrada según los exportOptions
+                      const dataTableHtml = dt.buttons.exportData(config.exportOptions);
+
+                      // 2. Construir la estructura de la tabla idéntica a la vista limpia
+                      let tablaLimpia =
+                        '<table style="width:100%; border-collapse: collapse; font-family: sans-serif; font-size: 14px;">';
+
+                      // Añadir el encabezado (Header)
+                      tablaLimpia += '<thead><tr style="border-bottom: 2px solid #ddd; text-align: left;">';
+                      dataTableHtml.header.forEach(headerText => {
+                        tablaLimpia += `<th style="padding: 12px 8px; text-transform: uppercase; font-size: 12px; color: #5a6a85;">${headerText}</th>`;
+                      });
+                      tablaLimpia += '</tr></thead><tbody>';
+
+                      // Añadir las filas de datos (Body)
+                      dataTableHtml.body.forEach(row => {
+                        tablaLimpia += '<tr style="border-bottom: 1px solid #eee;">';
+                        row.forEach(cellText => {
+                          tablaLimpia += `<td style="padding: 12px 8px; color: #2a3547;">${cellText}</td>`;
+                        });
+                        tablaLimpia += '</tr>';
+                      });
+                      tablaLimpia += '</tbody></table>';
+
+                      // 3. Crear un contenedor temporal oculto en tu página para inyectar este diseño
+                      const printContainer = document.createElement('div');
+                      printContainer.id = 'pwa-print-area';
+                      printContainer.innerHTML = `
+                <div style="padding: 20px;">
+                    <h2 style="font-family: sans-serif; color: #2a3547; margin-bottom: 20px;">Administrar Categorías</h2>
+                    ${tablaLimpia}
+                </div>
+            `;
+                      document.body.appendChild(printContainer);
+
+                      // 4. Lanzar la ventana de impresión nativa (Inmune a los bloqueos de la PWA)
+                      window.print();
+
+                      // 5. Limpiar el elemento del DOM inmediatamente después
+                      document.body.removeChild(printContainer);
                     }
                   },
                   {
@@ -166,7 +208,7 @@ if (a) {
     language: {
       lengthMenu: 'Mostrar _MENU_ registros',
       zeroRecords: 'No se encontraron resultados',
-      emptyTable: "No hay datos disponibles en la tabla",
+      emptyTable: 'No hay datos disponibles en la tabla',
       info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
       infoEmpty: 'Sin registros disponibles',
       infoFiltered: '(filtrado de _MAX_ registros)',
