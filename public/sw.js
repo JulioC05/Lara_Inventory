@@ -1,64 +1,67 @@
 const CACHE_NAME = "licoreria-v1";
 
 const ASSETS_TO_CACHE = [
-    '/',
-    '/manifest.json',
-    '/Sneat-Admin/assets/img/favicon/logo-imagen.ico',
-    'https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap',
-    'https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css',
-    'https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js',
-    'https://unpkg.com/html5-qrcode',
-    
+    "/",
+    "/manifest.json",
+    "/Sneat-Admin/assets/img/favicon/logo-imagen.ico",
+    "https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap",
+    "https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css",
+    "https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js",
+    "https://unpkg.com/html5-qrcode",
+
     // CSS Local
-    '/Sneat-Admin/assets/vendor/fonts/iconify-icons.css',
-    '/Sneat-Admin/assets/vendor/css/core.css',
-    '/Sneat-Admin/assets/css/demo.css',
-    '/Sneat-Admin/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css',
-    '/Sneat-Admin/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css',
-    '/Sneat-Admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css',
-    '/Sneat-Admin/assets/vendor/libs/apex-charts/apex-charts.css',
+    "/Sneat-Admin/assets/vendor/fonts/iconify-icons.css",
+    "/Sneat-Admin/assets/vendor/css/core.css",
+    "/Sneat-Admin/assets/css/demo.css",
+    "/Sneat-Admin/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css",
+    "/Sneat-Admin/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css",
+    "/Sneat-Admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css",
+    "/Sneat-Admin/assets/vendor/libs/apex-charts/apex-charts.css",
 
     // JS Local
-    '/Sneat-Admin/assets/vendor/js/helpers.js',
-    '/Sneat-Admin/assets/js/config.js',
-    '/Sneat-Admin/assets/vendor/libs/jquery/jquery.js',
-    '/Sneat-Admin/assets/vendor/libs/popper/popper.js',
-    '/Sneat-Admin/assets/vendor/js/bootstrap.js',
-    '/Sneat-Admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js',
-    '/Sneat-Admin/assets/vendor/js/menu.js',
-    
+    "/Sneat-Admin/assets/vendor/js/helpers.js",
+    "/Sneat-Admin/assets/js/config.js",
+    "/Sneat-Admin/assets/vendor/libs/jquery/jquery.js",
+    "/Sneat-Admin/assets/vendor/libs/popper/popper.js",
+    "/Sneat-Admin/assets/vendor/js/bootstrap.js",
+    "/Sneat-Admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js",
+    "/Sneat-Admin/assets/vendor/js/menu.js",
+
     // Datatables corregido según tu estructura exacta de carpetas
-    '/Sneat-Admin/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
-    '/Sneat-Admin/assets/js/tables-datatables-advanced.js',
-    '/Sneat-Admin/assets/js/ventas-detalles.js',
-    '/Sneat-Admin/assets/vendor/libs/apex-charts/apexcharts.js',
-    '/Sneat-Admin/assets/js/main.js',
-    '/Sneat-Admin/assets/js/dashboards-analytics.js',
-    '/Sneat-Admin/assets/js/ui-toasts.js',
-    '/Sneat-Admin/assets/js/delete-modal.js',
-    '/Sneat-Admin/assets/js/edit-modal.js',
-    '/Sneat-Admin/assets/js/usuarios/edit-modal.js',
-    '/Sneat-Admin/assets/js/preventModalSubmit.js'
+    "/Sneat-Admin/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js",
+    "/Sneat-Admin/assets/js/tables-datatables-advanced.js",
+    "/Sneat-Admin/assets/js/ventas-detalles.js",
+    "/Sneat-Admin/assets/vendor/libs/apex-charts/apexcharts.js",
+    "/Sneat-Admin/assets/js/main.js",
+    "/Sneat-Admin/assets/js/dashboards-analytics.js",
+    "/Sneat-Admin/assets/js/ui-toasts.js",
+    "/Sneat-Admin/assets/js/delete-modal.js",
+    "/Sneat-Admin/assets/js/edit-modal.js",
+    "/Sneat-Admin/assets/js/usuarios/edit-modal.js",
+    "/Sneat-Admin/assets/js/preventModalSubmit.js",
 ];
 
 // --- INSTALACIÓN TOLERANTE A ERRORES (MÁGICA) ---
 self.addEventListener("install", (event) => {
     self.skipWaiting();
-    
+
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             console.log("PWA: Iniciando cacheo de archivos...");
-            
+
             // En lugar de usar addAll, mapeamos cada archivo de forma independiente
             const cachePromises = ASSETS_TO_CACHE.map((asset) => {
                 return cache.add(asset).catch((error) => {
                     // Si un archivo específico da 404 o falla, lo reporta pero NO rompe la PWA
-                    console.warn(`PWA: No se pudo cachear el archivo: ${asset}`, error);
+                    console.warn(
+                        `PWA: No se pudo cachear el archivo: ${asset}`,
+                        error,
+                    );
                 });
             });
-            
+
             return Promise.all(cachePromises);
-        })
+        }),
     );
 });
 
@@ -88,8 +91,11 @@ self.addEventListener("fetch", (event) => {
     // Ignorar métodos que no sean GET (POST de ventas/compras los manejaremos después)
     if (request.method !== "GET") return;
 
-    if (!request.url.startsWith('http://') && !request.url.startsWith('https://')) {
-        return; 
+    if (
+        !request.url.startsWith("http://") &&
+        !request.url.startsWith("https://")
+    ) {
+        return;
     }
 
     const url = new URL(request.url);
@@ -166,6 +172,61 @@ self.addEventListener("fetch", (event) => {
                         },
                     );
                 });
+            }),
+    );
+});
+
+// ESCUCHAR EL EVENTO PUSH (Cuando llega la notificación desde Laravel)
+self.addEventListener("push", (event) => {
+    if (!event.data) return;
+
+    // Parsear la información enviada por Laravel
+    const payload = event.data.json();
+    // console.log("Payload recibido desde Laravel:", payload);
+
+    const destinoViaje =
+        payload.data && payload.data.url ? payload.data.url : "/";
+
+    const opciones = {
+        body: payload.body || "Tienes una nueva actualización de la licorería.",
+        icon: payload.icon || "Sneat-Admin/assets/img/favicon/logo.ico",
+        badge: payload.badge || "Sneat-Admin/assets/img/favicon/logo.ico",
+        data: {
+            url: destinoViaje, // Guardamos la URL en la notificación física
+        },
+        vibrate: [100, 50, 100], // Vibración en Android [vibrar, pausa, vibrar]
+        actions: [{ action: "open_url", title: "Revisar Ahora" }],
+    };
+
+    event.waitUntil(
+        self.registration.showNotification(payload.title, opciones),
+    );
+});
+
+self.addEventListener("notificationclick", (event) => {
+    event.notification.close(); // Cierra la alerta visual inmediatamente
+
+    // 2. Recuperamos la URL sin importar dónde se hizo clic
+    const urlParaAbrir =
+        event.notification.data && event.notification.data.url
+            ? event.notification.data.url
+            : "/";
+
+    // 3. Ejecutamos el flujo de apertura/enfoque de ventana
+    event.waitUntil(
+        clients
+            .matchAll({ type: "window", includeUncontrolled: true })
+            .then((clientList) => {
+                // Si la pestaña ya existe con esa URL exacta, la trae al frente
+                for (const client of clientList) {
+                    if (client.url === urlParaAbrir && "focus" in client) {
+                        return client.focus();
+                    }
+                }
+                // Si no está abierta, abre una nueva pestaña
+                if (clients.openWindow) {
+                    return clients.openWindow(urlParaAbrir);
+                }
             }),
     );
 });

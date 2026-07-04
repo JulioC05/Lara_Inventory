@@ -7,10 +7,12 @@ use App\Http\Controllers\Inventory\MarcaController;
 use App\Http\Controllers\Inventory\ProductoController;
 use App\Http\Controllers\Purchases\CompraController;
 use App\Http\Controllers\Purchases\ProveedorController;
+use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\Sales\ClienteController;
 use App\Http\Controllers\Sales\VentaController;
 use App\Http\Controllers\UsuarioController;
+use App\Notifications\TestNotification;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AuthController::class, 'index'])->name('login');
@@ -22,6 +24,23 @@ Route::get('/', function () {
     return app(AuthController::class)->index();
 })->name('login');
 Route::post('/logear', [AuthController::class, 'logear'])->name('logear');
+
+Route::middleware(['auth'])->group(function () {
+    // ... tus rutas actuales del sistema (inventario, ventas, etc.) ...
+    // RUTA TEMPORAL PARA MANDARTE UNA NOTIFICACIÓN DE PRUEBA
+    Route::get('/test-push', function () {
+        $user = auth()->user();
+
+        // Enviamos la notificación usando el canal nativo
+        $user->notify(new TestNotification());
+
+        return "¡Notificación Push enviada al celular/navegador de " . $user->name . "!";
+    })->name('push.test');
+    // NUEVAS RUTAS PARA NOTIFICACIONES PUSH
+    Route::post('/push-subscription/update', [PushSubscriptionController::class, 'update'])->name('push.update');
+    Route::post('/push-subscription/delete', [PushSubscriptionController::class, 'destroy'])->name('push.delete');
+});
+
 
 Route::middleware("auth")->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

@@ -15,6 +15,8 @@
     {{-- Manifest --}}
     <link rel="manifest" href="{{ asset('manifest.json') }}" crossorigin="use-credentials">
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('Sneat-Admin/assets/img/favicon/logo-imagen.ico') }}" />
 
@@ -132,6 +134,9 @@
 
     {{-- Tom-select --}}
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+
+    {{-- PWA-NOTIS --}}
+    <script src="{{ asset('Sneat-Admin/assets/js/pwa-push.js') }}"></script>
 
 
     <x-alerts.toasts />
