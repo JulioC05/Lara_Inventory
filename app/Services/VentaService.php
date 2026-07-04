@@ -6,6 +6,10 @@ use App\Models\Venta;
 use App\Models\Producto;
 use Illuminate\Support\Facades\DB;
 use App\Models\MovimientoStock;
+use App\Models\User;
+use App\Notifications\LowStockNotification;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class VentaService
 {
@@ -149,7 +153,23 @@ class VentaService
                     $item['cantidad']
                 );
 
-                $stockNuevo = $producto->fresh()->stock;
+                $productoActualizado = $producto->fresh();
+                $stockNuevo = $productoActualizado->stock;
+
+                if ($stockAnterior > $productoActualizado->stock_minimo && $stockNuevo <= $productoActualizado->stock_minimo) {
+                    try {
+                        $administradores = User::role('admin')->get();
+                        
+                        if ($administradores->isNotEmpty()) {
+                            Notification::send(
+                                $administradores, 
+                                new LowStockNotification($productoActualizado)
+                            );
+                        }
+                    } catch (\Exception $e) {
+                        Log::error("Error enviando notificación de stock: " . $e->getMessage());
+                    }
+                }
 
                 /*
                 |--------------------------------------------------------------------------
