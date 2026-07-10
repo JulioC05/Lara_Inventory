@@ -50,18 +50,6 @@ class AuthController extends Controller
         return to_route('dashboard');
     }
 
-    // public function crearAdmin(){
-    //     User::create([
-    //         'name' => 'John Doe',
-    //         'email' => 'admin@admin.com',
-    //         'password' => Hash::make('admin123'),
-    //         'activo' => true,
-    //         'rol' => 'admin'
-    //     ]);
-
-    //     return "admin creado con exito";
-    // }
-
     public function logout() {
         Auth::logout();
         return to_route('login');

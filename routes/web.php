@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Inventory\CategoriaController;
 use App\Http\Controllers\DashboardController;
@@ -16,6 +17,10 @@ use App\Notifications\TestNotification;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AuthController::class, 'index'])->name('login');
+Route::get('/olvido-contrasena', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/olvido-contrasena', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/restablecer-contrasena/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/restablecer-contrasena', [ForgotPasswordController::class, 'reset'])->name('password.update');
 Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('dashboard');
