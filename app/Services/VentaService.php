@@ -15,6 +15,43 @@ class VentaService
 {
     public function registrar(array $data, int $userId): Venta
     {
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDACIONES BAJO NORMATIVA SUNAT (PERÚ)
+        |--------------------------------------------------------------------------
+        */
+        $tipoComprobante = $data['tipo_comprobante'];
+        $montoTotal = $data['total'];
+        $clienteId = $data['cliente_id'] ?? null;
+
+        // Buscamos al cliente si es que se ha enviado un ID
+        $cliente = $clienteId ? \App\Models\Cliente::find($clienteId) : null;
+
+        // RULE 1: Validación para FACTURAS
+        if ($tipoComprobante === 'factura') {
+            if (!$cliente) {
+                throw new \InvalidArgumentException(
+                    "Para emitir una Factura es obligatorio registrar e identificar a un Cliente con RUC."
+                );
+            }
+            if ($cliente->tipo_documento !== 'RUC' || strlen($cliente->numero_documento) !== 11) {
+                throw new \InvalidArgumentException(
+                    "El cliente seleccionado no cuenta con un RUC válido de 11 dígitos requerido para Facturas."
+                );
+            }
+        }
+
+        // RULE 2: Validación para BOLETAS (Monto >= S/ 700.00)
+        if ($tipoComprobante === 'boleta' && $montoTotal >= 700.00) {
+            // Suponiendo que tu cliente genérico "Clientes Varios" tiene ID 1 o no tiene documento
+            if (!$cliente || empty($cliente->numero_documento) || $cliente->id == 1) {
+                throw new \InvalidArgumentException(
+                    "Las boletas con montos mayores o iguales a S/ 700.00 exigen identificar obligatoriamente al cliente con su DNI/CE."
+                );
+            }
+        }
+
         return DB::transaction(function () use ($data, $userId) {
 
             /*
@@ -159,10 +196,10 @@ class VentaService
                 if ($stockAnterior > $productoActualizado->stock_minimo && $stockNuevo <= $productoActualizado->stock_minimo) {
                     try {
                         $administradores = User::role('admin')->get();
-                        
+
                         if ($administradores->isNotEmpty()) {
                             Notification::send(
-                                $administradores, 
+                                $administradores,
                                 new LowStockNotification($productoActualizado)
                             );
                         }

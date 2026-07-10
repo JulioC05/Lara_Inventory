@@ -13,6 +13,7 @@ use App\Models\Producto;
 use Illuminate\Support\Facades\DB;
 use App\Services\VentaService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class VentaController extends Controller
 {
@@ -37,7 +38,7 @@ class VentaController extends Controller
     public function create()
     {
         $titulo = 'Nueva Venta';
-        $clientes = Cliente::orderBy('nombre')->get();
+        $clientes = Cliente::oldest()->get();
         $metodosPago = MetodoPago::orderBy('nombre')->get();
         $productos = Producto::where('estado', true)->where('stock', '>', 0)->orderBy('nombre')->get();
 
@@ -49,14 +50,30 @@ class VentaController extends Controller
      */
     public function store(VentaRequest $request)
     {
-        $this->ventaService->registrar(
-            $request->validated(),
-            auth()->id()
-        );
+        try {
+            // Ejecutamos el registro con los datos ya validados por tu FormRequest
+            $venta = $this->ventaService->registrar(
+                $request->validated(),
+                auth()->id()
+            );
 
-        return redirect()
-            ->route('ventas.index')
-            ->with('success', 'Venta registrada correctamente.');
+            return redirect()
+                ->route('ventas.index')
+                ->with('success', 'Venta registrada correctamente. Comprobante: ' . $venta->numero_comprobante);
+        } catch (\InvalidArgumentException $e) {
+            // 🚨 Atrapamos la regla SUNAT que rebotó en el Service
+            return back()
+                ->withErrors(['cliente_id' => $e->getMessage()]) // Pintamos el mensaje en la vista
+                ->withInput(); // Mantenemos el carrito y los campos llenos
+
+        } catch (\Exception $e) {
+            // 💥 Atrapamos cualquier otro error inesperado (Stock, Base de datos, etc.)
+            Log::error("Error en venta: " . $e->getMessage());
+
+            return back()
+                ->withErrors(['error_general' => 'Ocurrió un problema interno. Inténtelo nuevamente.'])
+                ->withInput();
+        }
     }
 
     /**

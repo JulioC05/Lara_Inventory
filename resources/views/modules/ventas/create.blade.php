@@ -134,32 +134,30 @@
                 <div class="card mb-6">
                     <div class="card-body">
                         <x-forms.select name="cliente_id" label="Cliente">
-                            {{-- <option value="">Seleccione</option> --}}
-
                             @foreach ($clientes as $cliente)
-                                <option value="{{ $cliente->id }}">
-                                    {{ $cliente->nombre }}
+                                <option value="{{ $cliente->id }}" data-documento="{{ $cliente->tipo_documento }}">
+                                    {{ $cliente->nombre }} {{ $cliente->apellido }} {{ $cliente->razon_social }}
                                 </option>
                             @endforeach
+                        </x-forms.select>
+                        <x-forms.select name="tipo_comprobante" label="Tipo Comprobante">
+                            <option value="boleta">Boleta</option>
+                            <option value="factura">Factura</option>
                             </x-select>
-                            <x-forms.select name="tipo_comprobante" label="Tipo Comprobante">
-                                <option value="boleta">Boleta</option>
-                                <option value="factura">Factura</option>
-                                </x-select>
-                                <x-forms.select name="metodo_pago_id" label="Método de Pago">
-                                    @foreach ($metodosPago as $metodo)
-                                        <option value="{{ $metodo->id }}">
-                                            {{ $metodo->nombre }}
-                                        </option>
-                                    @endforeach
-                                    </x-select>
-                                    {{-- <div class="d-flex justify-content-between mb-2">
+                            <x-forms.select name="metodo_pago_id" label="Método de Pago">
+                                @foreach ($metodosPago as $metodo)
+                                    <option value="{{ $metodo->id }}">
+                                        {{ $metodo->nombre }}
+                                    </option>
+                                @endforeach
+                                </x-forms.select>
+                                {{-- <div class="d-flex justify-content-between mb-2">
                             <label for="payment-terms">Payment Terms</label>
                             <div class="form-check form-switch me-n2">
                                 <input type="checkbox" class="form-check-input" id="payment-terms" checked="">
                             </div>
                         </div> --}}
-                                    </form>
+                                </form>
                     </div>
                 </div>
             </div>
@@ -169,8 +167,6 @@
 @endsection
 
 @push('scripts')
-    
     @include('modules.ventas.scripts.ventas-pos-script')
     @include('modules.ventas.scripts.pos-qrscanner-script')
-
 @endpush
