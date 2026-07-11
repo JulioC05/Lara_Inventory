@@ -137,7 +137,17 @@
                                 </div> --}}
                                 <div class="d-flex flex-column">
                                     <a href="app-user-view-account.html" class="text-body text-nowrap">
-                                        <h6 class="mb-0">{{ $venta->cliente->nombre }}</h6>
+                                        <h6 class="mb-0">
+                                            @if ($venta->cliente)
+                                                @if ($venta->cliente->tipo_persona === 'juridica')
+                                                    {{ $venta->cliente->razon_social }}
+                                                @else
+                                                    {{ $venta->cliente->nombre_completo }}
+                                                @endif
+                                            @else
+                                                Cliente Varios
+                                            @endif
+                                        </h6>
                                     </a>
                                     {{-- <span>Usuario: {{ $venta->usuario->name }}</span> --}}
                                 </div>

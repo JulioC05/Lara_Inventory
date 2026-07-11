@@ -116,10 +116,10 @@
         <table class="header-table">
             <tr>
                 <td>
-                    <span class="title">LICORERÍA TU NEGOCIO</span><br>
-                    <small>RUC: 20123456789</small><br>
-                    <small>Av. Principal 123 - Lima, Perú</small><br>
-                    <small>Teléfono: (01) 456-7890</small>
+                    <span class="title">LICORERÍA ECONÓMICA</span><br>
+                    <small>RUC: 10094109049</small><br>
+                    <small>Jirón Los Sauces 197, Villa María del Triunfo 15811</small><br>
+                    {{-- <small>Teléfono: (01) 456-7890</small> --}}
                 </td>
                 <td style="width: 250px;">
                     <div class="comprobante-box">
@@ -135,7 +135,17 @@
             <table class="header-table">
                 <tr>
                     <td>
-                        <strong>CLIENTE:</strong> {{ $venta->cliente->nombre ?? 'Clientes Varios' }}<br>
+                        <strong>CLIENTE:</strong>
+                        @if ($venta->cliente)
+                            @if ($venta->cliente->tipo_persona === 'juridica')
+                                {{ $venta->cliente->razon_social }}
+                            @else
+                                {{ $venta->cliente->nombre_completo }}
+                            @endif
+                        @else
+                            Cliente Varios
+                        @endif
+                        <br>
                         <strong>CORREO:</strong> {{ $venta->cliente->email ?? '-' }}<br>
                         <strong>TELÉFONO:</strong> {{ $venta->cliente->telefono ?? '-' }}
                     </td>

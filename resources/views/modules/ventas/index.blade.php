@@ -48,7 +48,15 @@
                                         {{ ucfirst($venta->tipo_comprobante) }}
                                     </td>
                                     <td>
-                                        {{ $venta->cliente?->nombre ?? 'Cliente General' }}
+                                        @if ($venta->cliente)
+                                            @if ($venta->cliente->tipo_persona === 'juridica')
+                                                {{ $venta->cliente->razon_social }}
+                                            @else
+                                                {{ $venta->cliente->nombre_completo }}
+                                            @endif
+                                        @else
+                                            Cliente Varios
+                                        @endif
                                     </td>
                                     <td>
                                         {{ $venta->usuario->name }}

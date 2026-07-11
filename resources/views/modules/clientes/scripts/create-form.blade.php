@@ -40,11 +40,10 @@
             } else if (tipo === 'RUC') {
                 numeroDocumento.maxLength = 11;
             } else if (tipo === 'CE' || tipo === 'PASAPORTE') {
-                // Opcional: Puedes definir un estándar de longitud máxima para CE/Pasaporte si lo deseas (ej. 12 o 15)
                 numeroDocumento.maxLength = 15;
             }
 
-            // Cortar texto sobrante si existiera por un cambio abrupto de tipo de documento
+            // Cortar texto sobrante si existiera por un cambio abrupto
             if (numeroDocumento.maxLength !== -1 && numeroDocumento.value.length > numeroDocumento.maxLength) {
                 numeroDocumento.value = numeroDocumento.value.slice(0, numeroDocumento.maxLength);
             }
@@ -58,6 +57,9 @@
 
             const tipo = createTipoPersona.value;
 
+            // Guardar temporalmente el documento seleccionado antes de reconstruir el HTML
+            const documentoPrevio = createTipoDocumento.value;
+
             // =========================
             // PERSONA NATURAL
             // =========================
@@ -65,12 +67,18 @@
                 camposNatural.style.display = 'block';
                 camposJuridica.style.display = 'none';
 
-                // Opciones documento
+                // 🔥 Agregamos el "RUC" a las opciones de Persona Natural (RUC 10)
                 createTipoDocumento.innerHTML = `
-                <option value="DNI">DNI</option>
-                <option value="PASAPORTE">Pasaporte</option>
-                <option value="CE">CE</option>
-            `;
+                    <option value="DNI">DNI</option>
+                    <option value="RUC">RUC</option>
+                    <option value="PASAPORTE">Pasaporte</option>
+                    <option value="CE">CE</option>
+                `;
+
+                // Intentar restaurar la selección previa si era válida para natural
+                if (['DNI', 'RUC', 'PASAPORTE', 'CE'].includes(documentoPrevio)) {
+                    createTipoDocumento.value = documentoPrevio;
+                }
 
                 // Limpiar campos de jurídica
                 if (razonSocial) razonSocial.value = '';
@@ -85,19 +93,18 @@
                 camposNatural.style.display = 'none';
                 camposJuridica.style.display = 'block';
 
-                // Opciones documento
+                // Persona Jurídica solo maneja RUC (RUC 20)
                 createTipoDocumento.innerHTML = `
-                <option value="RUC">RUC</option>
-            `;
+                    <option value="RUC">RUC</option>
+                `;
 
                 // Limpiar campos de natural
                 if (nombre) nombre.value = '';
                 if (apellido) apellido.value = '';
             }
 
-            // Ejecutar inmediatamente la actualización del maxlength según la opción seleccionada por defecto
+            // Ejecutar inmediatamente la actualización del maxlength
             actualizarDocumento();
-            // cambiarFormulario();
         }
 
         // =====================================
@@ -113,8 +120,6 @@
         if (createTipoDocumento) {
             createTipoDocumento.addEventListener('change', () => {
                 actualizarDocumento();
-                // Si cambian a PASAPORTE o CE, permitimos que lo que ya esté escrito mantenga sus letras
-                // (el evento 'input' se encargará de validar lo nuevo que se digite)
             });
         }
 
@@ -123,13 +128,12 @@
             numeroDocumento.addEventListener('input', () => {
                 const tipo = createTipoDocumento.value;
 
-                // Si es DNI o RUC, removemos activamente cualquier letra o símbolo
+                // Si es DNI o RUC, removemos letras o símbolos
                 if (documentosNumericos.includes(tipo)) {
                     numeroDocumento.value = numeroDocumento.value.replace(/\D/g, '');
                 }
-                // Si es CE o PASAPORTE, permitimos letras y números (Alfanumérico), eliminando caracteres raros si quieres
+                // Si es CE o PASAPORTE, permitimos alfanumérico
                 else if (tipo === 'CE' || tipo === 'PASAPORTE') {
-                    // Esto permite letras (mayúsculas/minúsculas) y números. Borra espacios o signos.
                     numeroDocumento.value = numeroDocumento.value.replace(/[^a-zA-Z0-9]/g, '');
                 }
             });
@@ -142,10 +146,7 @@
 
         if (miModal) {
             miModal.addEventListener('show.bs.modal', () => {
-                // Limpiamos el input del número de documento para que empiece de cero al abrir
                 if (numeroDocumento) numeroDocumento.value = '';
-
-                // Disparamos la cadena: Lee Persona -> Renderiza Documentos -> Aplica Maxlength
                 cambiarFormulario();
             });
         } else {
