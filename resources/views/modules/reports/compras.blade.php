@@ -3,7 +3,7 @@
 @section('titulo', $titulo)
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Reportes /</span> Gestión de Compras</h4>
+        {{-- <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Reportes /</span> Gestión de Compras</h4> --}}
 
         <div class="row">
             <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
@@ -59,9 +59,8 @@
                                 <span class="badge bg-label-info p-2 rounded"><i class="bx bx-user text-info"></i></span>
                             </div>
                         </div>
-                        <span class="fw-semibold d-block mb-1">Proveedor Top</span>
-                        <h4 class="card-title mb-1 text-nowrap" style="font-size: 1.1rem;">
-                            {{ $proveedorTop->razon_social ?? 'Ninguno' }}</h4>
+                        <span class="fw-semibold d-block mb-1">Proveedor Top: <h4 class="card-title mb-1 text-nowrap">
+                                {{ $proveedorTop->razon_social ?? 'Ninguno' }}</h4></span>
                         <small class="text-muted">S/. {{ number_format($proveedorTop->total_proveedor ?? 0, 2) }}</small>
                     </div>
                 </div>

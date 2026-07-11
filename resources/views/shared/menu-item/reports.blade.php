@@ -1,5 +1,5 @@
 @role('Admin|Almacen')
-<li class="menu-item">
+<li class="menu-item {{ request()->routeIs('reportes.*') ? 'active open' : '' }}">
     <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons bx bx-bar-chart-alt-2"></i>
         <div class="text-truncate" data-i18n="Ventas">Reportes</div>
@@ -7,21 +7,21 @@
 
     <ul class="menu-sub">
         @role('Admin')
-        <li class="menu-item">
+        <li class="menu-item {{ request()->routeIs('reportes.ventas') ? 'active' : '' }}">
             <a href="{{ route('reportes.ventas') }}" class="menu-link">
                 <div>Ventas</div>
             </a>
         </li>
         @endrole
         @role('Admin')
-        <li class="menu-item">
+        <li class="menu-item {{ request()->routeIs('reportes.compras') ? 'active' : '' }}">
             <a href="{{ route('reportes.compras') }}" class="menu-link">
                 <div>Compras</div>
             </a>
         </li>
         @endrole
         @role('Admin|Almacen')
-        <li class="menu-item">
+        <li class="menu-item {{ request()->routeIs('reportes.movimientos-stock') ? 'active' : '' }}">
             <a href="{{ route('reportes.movimientos-stock') }}" class="menu-link">
                 <div>Inventario</div>
             </a>
