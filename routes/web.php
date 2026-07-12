@@ -6,6 +6,7 @@ use App\Http\Controllers\Inventory\CategoriaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Inventory\MarcaController;
 use App\Http\Controllers\Inventory\ProductoController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Purchases\CompraController;
 use App\Http\Controllers\Purchases\ProveedorController;
 use App\Http\Controllers\PushSubscriptionController;
@@ -50,6 +51,9 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware("auth")->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 Route::middleware('auth')->group(function () {

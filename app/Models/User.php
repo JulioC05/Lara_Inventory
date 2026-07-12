@@ -51,4 +51,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function getInicialesAttribute()
+    {
+        $palabras = explode(' ', $this->name);
+        $iniciales = '';
+
+        foreach ($palabras as $palabra) {
+            if (!empty($palabra)) {
+                $iniciales .= strtoupper($palabra[0]);
+            }
+            if (strlen($iniciales) >= 2) break; // Máximo 2 letras
+        }
+
+        return $iniciales ?: 'U'; // 'U' por defecto si el nombre está vacío
+    }
 }
