@@ -12,6 +12,9 @@ use App\Models\Proveedor;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Notifications\NuevoPedidoNotification;
+use Illuminate\Support\Facades\Notification;
+use App\Models\User;
 
 class CompraController extends Controller
 {
@@ -168,6 +171,21 @@ class CompraController extends Controller
                 }
             }
 
+            // 5. 🔥 ENVIAR NOTIFICACIÓN PUSH EN TIEMPO REAL A LOS ADMINISTRADORES
+            try {
+                // Buscamos los usuarios con rol admin usando la relación de Spatie
+                $usuariosAlertar = User::role(['admin', 'almacen'])->where('activo', true)->get();
+
+                if ($usuariosAlertar->isNotEmpty()) {
+                    // Dispara el WebPush usando el Facade de Notificaciones de Laravel
+                    Notification::send($usuariosAlertar, new NuevoPedidoNotification($compra));
+                }
+            } catch (\Exception $pushEx) {
+                // Capturamos cualquier fallo del servidor de Google/Apple (FCM/APNS) 
+                // para que una falla de red de push NO tumbe el guardado de la compra.
+                \Log::error("Fallo al enviar notificación push de compra: " . $pushEx->getMessage());
+            }
+
             // Si todo salió bien, guardamos definitivamente en la base de datos
             DB::commit();
 
@@ -242,6 +260,18 @@ class CompraController extends Controller
                         'stock_nuevo'     => $stockNuevo,
                     ]);
                 }
+            }
+
+            // 🔥 DISPARAR NOTIFICACIÓN PUSH DE CONFIRMACIÓN
+            try {
+                // Buscamos a los administradores y almaceneros activos para avisarles del ingreso
+                $usuariosAlertar = User::role(['admin', 'almacen'])->where('activo', true)->get();
+
+                if ($usuariosAlertar->isNotEmpty()) {
+                    Notification::send($usuariosAlertar, new NuevoPedidoNotification($compra));
+                }
+            } catch (\Exception $pushEx) {
+                \Log::error("Error al enviar push de confirmación de compra: " . $pushEx->getMessage());
             }
 
             // Si todo el bucle corrió sin errores, guardamos en la base de datos de forma definitiva
