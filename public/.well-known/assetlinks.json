@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.licorcontrol.twa",
+        "sha256_cert_fingerprints": ["74:EC:22:67:8D:47:4B:CF:CA:3A:D6:2E:DB:F9:83:C3:52:B1:10:91:55:7C:6B:C9:6B:86:08:98:74:0D:A8:BE"]
+      }
+    }]
