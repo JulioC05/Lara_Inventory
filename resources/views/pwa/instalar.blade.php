@@ -93,12 +93,12 @@
     <div class="card">
         <div class="logo">🍾</div>
         <h1>LicorControl App</h1>
-        <p>Estás a un paso de instalar el sistema de inventario y ventas en tu dispositivo móvil con soporte offline.
+        <p>Sistema de control de inventarios con soporte offline
         </p>
 
-        <button id="btnInstalarPwa" class="btn" style="display: none;">Instalar Aplicación</button>
+        {{-- <button id="btnInstalarPwa" class="btn" style="display: none;">Instalar Aplicación</button> --}}
 
-        <a href="{{ route('login') }}" class="btn btn-secondary">Ir al Iniciar Sesión</a>
+        <a href="{{ route('login') }}" class="btn btn-secondary">Iniciar Sesión</a>
     </div>
 
     <script>

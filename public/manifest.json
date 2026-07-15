@@ -1,7 +1,7 @@
 {
   "name": "Licorería Económica",
   "short_name": "Económica",
-  "start_url": "/",
+  "start_url": "/instalar",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
