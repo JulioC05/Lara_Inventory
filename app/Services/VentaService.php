@@ -4,10 +4,10 @@ namespace App\Services;
 
 use App\Models\Venta;
 use App\Models\Producto;
-use Illuminate\Support\Facades\DB;
 use App\Models\MovimientoStock;
 use App\Models\User;
 use App\Notifications\LowStockNotification;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
@@ -15,6 +15,18 @@ class VentaService
 {
     public function registrar(array $data, int $userId): Venta
     {
+        /*
+        |--------------------------------------------------------------------------
+        | PRE-PROCESAMIENTO MODO OFFLINE (NORMALIZACIÓN DE DATOS)
+        |--------------------------------------------------------------------------
+        */
+        // Si los productos vienen codificados como string JSON desde el Service Worker, los decodificamos
+        if (isset($data['productos']) && is_string($data['productos'])) {
+            $data['productos'] = json_decode($data['productos'], true);
+        }
+
+        // Aseguramos que siempre sea un array iterable para no romper la ejecución
+        $data['productos'] = $data['productos'] ?? [];
 
         /*
         |--------------------------------------------------------------------------
@@ -22,7 +34,7 @@ class VentaService
         |--------------------------------------------------------------------------
         */
         $tipoComprobante = $data['tipo_comprobante'];
-        $montoTotal = $data['total'];
+        $montoTotal = (float) $data['total']; // Cast preventivo por si viene como string "16.00"
         $clienteId = $data['cliente_id'] ?? null;
 
         // Buscamos al cliente si es que se ha enviado un ID
@@ -59,7 +71,6 @@ class VentaService
             | CALCULO N° COMPROBANTE
             |--------------------------------------------------------------------------
             */
-
             $tipo = $data['tipo_comprobante'];
 
             $serie = match ($tipo) {
@@ -67,10 +78,7 @@ class VentaService
                 'factura' => 'F001',
             };
 
-            $ultimaVenta = Venta::where(
-                'tipo_comprobante',
-                $tipo
-            )
+            $ultimaVenta = Venta::where('tipo_comprobante', $tipo)
                 ->whereNotNull('numero_comprobante')
                 ->latest('id')
                 ->first();
@@ -78,13 +86,8 @@ class VentaService
             $ultimoNumero = 0;
 
             if ($ultimaVenta) {
-
-                $partes = explode(
-                    '-',
-                    $ultimaVenta->numero_comprobante
-                );
-
-                $ultimoNumero = (int) $partes[1];
+                $partes = explode('-', $ultimaVenta->numero_comprobante);
+                $ultimoNumero = (int) ($partes[1] ?? 0);
             }
 
             $nuevoNumero = str_pad(
@@ -101,12 +104,10 @@ class VentaService
             | CREAR VENTA
             |--------------------------------------------------------------------------
             */
-
             $venta = Venta::create([
-
                 'cliente_id' => $data['cliente_id'],
                 'user_id' => $userId,
-                'metodo_pago_id' => $data['metodo_pago_id'],
+                'metodo_pago_id' => $data['metodo_pago_id'] ?? 1, // Fallback preventivo por si no viene en el JSON
                 'numero_comprobante' => $numeroComprobante,
                 'tipo_comprobante' => $data['tipo_comprobante'],
                 'subtotal' => $data['subtotal'],
@@ -116,7 +117,7 @@ class VentaService
                 'monto_recibido' => $data['monto_recibido'] ?? null,
                 'vuelto' => $data['vuelto'] ?? 0,
                 'estado' => 'completada',
-                'fecha_venta' => $data['fecha_venta'] ?? now(),
+                'fecha_venta' => $data['creado_offline_at'] ?? $data['fecha_venta'] ?? now(), // Mantiene la fecha real de la venta offline
             ]);
 
             /*
@@ -124,8 +125,17 @@ class VentaService
             | DETALLE
             |--------------------------------------------------------------------------
             */
-
             foreach ($data['productos'] as $item) {
+
+                // 🔥 PROTECCIÓN CRÍTICA: Si el ítem individual sigue siendo un string JSON, lo decodificamos de inmediato
+                if (is_string($item)) {
+                    $item = json_decode($item, true);
+                }
+
+                // Evitamos procesar registros corruptos o vacíos que vengan del almacenamiento local
+                if (!isset($item['id'])) {
+                    continue;
+                }
 
                 $producto = Producto::findOrFail($item['id']);
 
@@ -134,9 +144,7 @@ class VentaService
                 | VALIDAR STOCK
                 |--------------------------------------------------------------------------
                 */
-
                 if ($producto->stock < $item['cantidad']) {
-
                     throw new \Exception(
                         "Stock insuficiente para {$producto->nombre}"
                     );
@@ -147,11 +155,8 @@ class VentaService
                 | CALCULOS
                 |--------------------------------------------------------------------------
                 */
-
-                $total = $item['precio_unitario'] * $item['cantidad'];
-
+                $total = (float) $item['precio_unitario'] * (int) $item['cantidad'];
                 $subtotal = $total / 1.18;
-
                 $igv = $total - $subtotal;
 
                 /*
@@ -159,21 +164,13 @@ class VentaService
                 | DETALLE VENTA
                 |--------------------------------------------------------------------------
                 */
-
                 $venta->detalles()->create([
-
                     'producto_id' => $producto->id,
-
                     'cantidad' => $item['cantidad'],
-
                     'precio_unitario' => $item['precio_unitario'],
-
                     'igv' => $igv,
-
                     'descuento' => 0,
-
                     'subtotal' => $subtotal,
-
                     'total' => $total,
                 ]);
 
@@ -182,7 +179,6 @@ class VentaService
                 | DESCONTAR STOCK
                 |--------------------------------------------------------------------------
                 */
-
                 $stockAnterior = $producto->stock;
 
                 $producto->decrement(
@@ -213,23 +209,14 @@ class VentaService
                 | MOVIMIENTO STOCK
                 |--------------------------------------------------------------------------
                 */
-
                 MovimientoStock::create([
-
                     'producto_id' => $producto->id,
-
                     'user_id' => $userId,
-
                     'tipo_movimiento' => 'salida',
-
                     'motivo' => 'venta',
-
                     'referencia' => $venta->numero_comprobante,
-
                     'cantidad' => $item['cantidad'],
-
                     'stock_anterior' => $stockAnterior,
-
                     'stock_nuevo' => $stockNuevo,
                 ]);
             }

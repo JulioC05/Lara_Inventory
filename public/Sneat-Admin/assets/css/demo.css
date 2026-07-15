@@ -249,3 +249,12 @@
 #pwa-print-area {
     display: none;
 }
+
+@keyframes pulse-danger {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+.animate-pulse {
+    animation: pulse-danger 2s infinite ease-in-out;
+}

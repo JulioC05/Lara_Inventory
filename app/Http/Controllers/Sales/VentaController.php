@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use App\Services\VentaService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class VentaController extends Controller
 {
@@ -213,5 +214,93 @@ class VentaController extends Controller
 
         // Retornamos el flujo de descarga directa
         return $pdf->download($nombreArchivo);
+    }
+
+    public function storeOffline(Request $request)
+    {
+        try {
+            Log::info("PWA API: Datos recibidos de IndexedDB:", $request->all());
+
+            // 1. Validación manual calcada al 100% de tu VentaRequest
+            $validador = Validator::make($request->all(), [
+                'cliente_id'                  => 'nullable|exists:clientes,id',
+                'metodo_pago_id'              => 'required|exists:metodos_pago,id',
+                'tipo_comprobante'            => 'required|string|in:ticket,boleta,factura',
+                'subtotal'                    => 'required|numeric|min:0',
+                'igv'                         => 'required|numeric|min:0',
+                'total'                       => 'required|numeric|min:0.01',
+                'descuento'                   => 'nullable|numeric|min:0',
+                'monto_recibido'              => 'nullable|numeric|min:0',
+                'vuelto'                      => 'nullable|numeric|min:0',
+                'productos'                   => 'required|array|min:1',
+                'productos.*.id'              => 'required|exists:productos,id',
+                'productos.*.cantidad'        => 'required|integer|min:1',
+                'productos.*.precio_unitario' => 'required|numeric|min:0',
+            ]);
+
+            if ($validador->fails()) {
+                Log::warn("PWA API: Falló la validación estricta:", $validador->errors()->toArray());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validación de venta fallida.',
+                    'errors'  => $validador->errors()
+                ], 422);
+            }
+
+            $datosValidados = $validador->validated();
+
+            // 2. Adaptamos la estructura para que tu VentaService la digiera como si viniera del Formulario Web
+            $datosParaService = [
+                'cliente_id'       => $datosValidados['cliente_id'],
+                'metodo_pago_id'   => $datosValidados['metodo_pago_id'],
+                'tipo_comprobante' => $datosValidados['tipo_comprobante'],
+                'subtotal'         => $datosValidados['subtotal'],
+                'igv'              => $datosValidados['igv'],
+                'total'            => $datosValidados['total'],
+                'descuento'        => $datosValidados['descuento'] ?? 0,
+                'monto_recibido'   => $datosValidados['monto_recibido'] ?? $datosValidados['total'],
+                'vuelto'           => $datosValidados['vuelto'] ?? 0,
+
+                // 🔥 Mapeo secuencial exacto para evitar conflictos de offsets en arrays
+                'productos'        => collect($datosValidados['productos'])->map(function ($prod) {
+                    return [
+                        'id'              => (int) $prod['id'],
+                        'cantidad'        => (int) $prod['cantidad'],
+                        'precio_unitario' => (float) $prod['precio_unitario']
+                    ];
+                })->all()
+            ];
+
+            foreach ($datosValidados['productos'] as $prod) {
+                $datosParaService['productos'][]  = $prod['id'];
+                $datosParaService['cantidades'][] = $prod['cantidad'];
+                $datosParaService['precios'][]    = $prod['precio_unitario'];
+            }
+
+            // 3. Ejecutar el VentaService
+            $userId = auth()->id() ?? 1; // Cajero/Admin por defecto
+
+            $venta = $this->ventaService->registrar($datosParaService, $userId);
+
+            Log::info("PWA API: ¡ÉXITO! Venta guardada en base de datos. ID: {$venta->id}");
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Venta offline sincronizada correctamente.',
+                'venta_id' => $venta->id
+            ], 201);
+        } catch (\InvalidArgumentException $e) {
+            Log::warn("PWA API: Regla SUNAT rebotada en Service: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error SUNAT: ' . $e->getMessage()
+            ], 400);
+        } catch (\Exception $e) {
+            Log::error("PWA API: Fallo de ejecución en Service: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de servidor: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

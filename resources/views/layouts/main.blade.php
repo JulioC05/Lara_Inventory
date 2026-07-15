@@ -138,15 +138,19 @@
     {{-- PWA-NOTIS --}}
     <script src="{{ asset('Sneat-Admin/assets/js/pwa-push.js') }}"></script>
 
+    {{-- Offline-db --}}
+    <script src="{{ asset('js/offline-db.js') }}"></script>
+    <script src="{{ asset('js/offline-sale.js') }}"></script>
+
 
     <x-alerts.toasts />
 
     @stack('scripts')
     @yield('page-script')
 
-    <script>
+    {{-- <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(r => console.log(r))
+            // navigator.serviceWorker.getRegistrations().then(r => console.log(r))
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('/sw.js')
                     .then(function(registration) {
@@ -157,7 +161,58 @@
                     });
             });
         }
-        
+    </script> --}}
+
+    <script>
+        // 🔥 CONTROL VISUAL SEGURO MEDIANTE PING REAL DE RED
+        async function actualizarEstadoRed() {
+            const indicador = document.getElementById('status-conexion-pwa');
+            const icono = document.getElementById('icono-conexion');
+            const texto = document.getElementById('texto-conexion');
+
+            if (!indicador) return;
+
+            // Si el propio navegador ya dice que está offline, ni hacemos el ping
+            if (!navigator.onLine) {
+                mostrarIndicadorOffline(indicador, icono, texto);
+                return;
+            }
+
+            try {
+                // Hacemos una petición HEAD (no descarga datos, solo cabeceras) para validar internet real
+                await fetch('/manifest.json', {
+                    method: 'HEAD',
+                    cache: 'no-store'
+                });
+
+                // --- ESTADO ONLINE REAL ---
+                indicador.classList.remove('bg-label-danger');
+                indicador.classList.add('bg-label-success');
+                icono.className = 'bx bx-wifi font-medium-3';
+                texto.innerText = 'En Línea';
+            } catch (error) {
+                // --- ESTADO OFFLINE REAL (Atrapado por la caché) ---
+                mostrarIndicadorOffline(indicador, icono, texto);
+            }
+        }
+
+        // Función auxiliar para pintar el estado offline
+        function mostrarIndicadorOffline(indicador, icono, texto) {
+            indicador.classList.remove('bg-label-success');
+            indicador.classList.add('bg-label-danger');
+            icono.className = 'bx bx-wifi-off font-medium-3 animate-pulse';
+            texto.innerText = 'Modo Offline';
+        }
+
+        // Escuchar los eventos físicos de cambio de red en caliente
+        window.addEventListener('online', actualizarEstadoRed);
+        window.addEventListener('offline', actualizarEstadoRed);
+
+        // 🔥 CLAVE: Al cargar cualquier página, validamos la red con el ping antes de pintar el color
+        window.addEventListener('DOMContentLoaded', () => {
+            // Un pequeño retraso de 100ms para asegurar que el DOM de Sneat esté listo
+            setTimeout(actualizarEstadoRed, 100);
+        });
     </script>
 </body>
 

@@ -1,4 +1,7 @@
 <script>
+ 
+
+
     const productoTom = new TomSelect('#productoSelect', {
         create: false,
         maxOptions: 1000,
@@ -28,7 +31,7 @@
         }
     });
 
-    let carrito = [];
+    window.carrito = [];
     const IGV_PERCENT = 0.18;
     const SUNAT_LIMITE_BOLETA = 700.00; // 🇵🇪 Límite legal SUNAT para identificación
 
@@ -52,7 +55,7 @@
         const stock = parseInt(option.dataset.stock);
         const cantidad = 1;
 
-        const existente = carrito.find(item => item.id == productoId);
+        const existente = window.carrito.find(item => item.id == productoId);
 
         if (existente) {
             if ((existente.cantidad + 1) > stock) {
@@ -61,7 +64,7 @@
             }
             existente.cantidad++;
         } else {
-            carrito.push({
+            window.carrito.push({
                 id: productoId,
                 nombre: nombre,
                 precio: precio,
@@ -78,7 +81,7 @@
         productosContainer.innerHTML = '';
         let subtotalGeneral = 0;
 
-        carrito.forEach((producto, index) => {
+        window.carrito.forEach((producto, index) => {
             const subtotal = producto.precio * producto.cantidad;
             subtotalGeneral += subtotal;
 
@@ -118,20 +121,27 @@
     }
 
     function actualizarCantidad(index, cantidad) {
-        carrito[index].cantidad = parseInt(cantidad) || 1;
+        window.carrito[index].cantidad = parseInt(cantidad) || 1;
         renderCarrito();
     }
 
     function eliminarProducto(index) {
-        carrito.splice(index, 1);
+        window.carrito.splice(index, 1);
         renderCarrito();
+    }
+
+    function limpiarFormularioVenta() {
+        window.carrito = [];
+        renderCarrito();
+        if (formVenta) formVenta.reset();
+        if (productoTom) productoTom.clear();
     }
 
     /*
     |--------------------------------------------------------------------------
     | LÓGICA DE CONTROL SUNAT EN TIEMPO REAL
     |--------------------------------------------------------------------------
-    */
+    |*/
     function validarReglasSunat(totalActual = null) {
         if (totalActual === null) {
             totalActual = parseFloat(document.getElementById('totalInput').value) || 0;
@@ -140,30 +150,24 @@
         const tipoComprobante = selectComprobante.value;
         const clienteSeleccionado = selectCliente.value;
 
-        // Conseguimos la opción que está seleccionada actualmente
         const optionCliente = selectCliente.options[selectCliente.selectedIndex];
         const tipoDocumentoCliente = optionCliente ? optionCliente.dataset.documento : '';
 
-        // Limpiar alertas previas
         selectCliente.classList.remove('is-invalid', 'border-danger');
 
-        // 1. Validar Boleta >= S/ 700
         if (tipoComprobante === 'boleta' && totalActual >= SUNAT_LIMITE_BOLETA) {
             if (clienteSeleccionado == "1" || !clienteSeleccionado || tipoDocumentoCliente !== 'DNI') {
                 selectCliente.classList.add('is-invalid', 'border-danger');
             }
         }
 
-        // 2. 🔥 VALIDAR FACTURA (Regla Estricta)
         if (tipoComprobante === 'factura') {
-            // Si es el cliente genérico o el documento NO es RUC, se pinta de rojo
             if (clienteSeleccionado == "1" || !clienteSeleccionado || tipoDocumentoCliente !== 'RUC') {
                 selectCliente.classList.add('is-invalid', 'border-danger');
             }
         }
     }
 
-    // Listeners para reaccionar al cambio de los selectores de la barra lateral
     if (selectComprobante) {
         selectComprobante.addEventListener('change', () => validarReglasSunat());
     }
@@ -171,30 +175,161 @@
         selectCliente.addEventListener('change', () => validarReglasSunat());
     }
 
-    // Bloqueo preventivo al intentar enviar el formulario con errores
-    if (formVenta) {
-        formVenta.addEventListener('submit', function(e) {
-            const totalActual = parseFloat(document.getElementById('totalInput').value) || 0;
-            const tipoComprobante = selectComprobante.value;
-            const clienteSeleccionado = selectCliente.value;
 
-            if (tipoComprobante === 'boleta' && totalActual >= SUNAT_LIMITE_BOLETA) {
-                if (clienteSeleccionado == "1" || !clienteSeleccionado) {
-                    e.preventDefault();
-                    alert(
-                        `🚨 Regla SUNAT: Para boletas con montos mayores o iguales a S/ ${SUNAT_LIMITE_BOLETA} es obligatorio identificar al cliente con su DNI/CE.`
-                    );
-                    return false;
+    document.addEventListener('DOMContentLoaded', () => {
+        const saleForm = document.getElementById('saleForm');
+
+        if (saleForm) {
+            // Agregamos 'async' para poder usar 'await' dentro del evento
+            saleForm.addEventListener('submit', async function(event) {
+                // 1. 🔥 REGLA DE ORO: Detiene la recarga inmediatamente antes de validar nada
+                event.preventDefault();
+                event.stopPropagation();
+
+                console.log("🔍 Verificando conexión real a internet...");
+
+                // Extraemos los valores del formulario usando los name/id estructurados
+                const selectComprobante = document.querySelector(
+                    'select[name="tipo_comprobante"]') || document.getElementById(
+                    'tipoComprobante');
+                const selectCliente = document.querySelector('select[name="cliente_id"]') ||
+                    document.getElementById('cliente');
+                const totalInput = document.getElementById('totalInput');
+
+                const tipoComprobante = selectComprobante ? selectComprobante.value : "";
+                const clienteSeleccionado = selectCliente ? selectCliente.value : "";
+                const totalActual = totalInput ? parseFloat(totalInput.value) : 0;
+
+                // --- VALIDACIÓN INTELIGENTE DE TIPO DE DOCUMENTO (SUNAT) ---
+                let tipoDocumentoCliente = '';
+                if (selectCliente && selectCliente.selectedIndex !== -1) {
+                    const optionSeleccionada = selectCliente.options[selectCliente.selectedIndex];
+                    // Intentamos leer el dataset; si TomSelect lo borró, leemos el texto visible de la opción
+                    tipoDocumentoCliente = optionSeleccionada.dataset.documento || "";
+
+                    const textoOption = optionSeleccionada.text.toUpperCase();
+                    if (!tipoDocumentoCliente) {
+                        if (textoOption.includes('RUC') || optionSeleccionada.value.length === 11) {
+                            tipoDocumentoCliente = 'RUC';
+                        } else if (textoOption.includes('DNI') || optionSeleccionada.value
+                            .length === 8) {
+                            tipoDocumentoCliente = 'DNI';
+                        }
+                    }
+                } else {
+                    // Fallback de fuerza bruta si el nodo no responde por la caché
+                    tipoDocumentoCliente = (clienteSeleccionado.length === 11) ? 'RUC' : 'DNI';
                 }
-            }
 
-            if (tipoComprobante === 'factura' && (clienteSeleccionado == "1" || tipoDocumentoCliente !==
-                'RUC')) {
-                e.preventDefault();
-                alert(
-                    '🚨 Regla SUNAT: Las Facturas solo pueden ser emitidas a clientes registrados con un número de RUC válido.');
-                return false;
-            }
-        });
-    }
+                // --- 1. VALIDACIONES REGLAS SUNAT (FIJADAS) ---
+                if (tipoComprobante === 'boleta' && totalActual >= SUNAT_LIMITE_BOLETA) {
+                    if (clienteSeleccionado == "1" || !clienteSeleccionado ||
+                        tipoDocumentoCliente !== 'DNI') {
+                        alert(
+                            `🚨 Regla SUNAT: Para boletas con montos mayores o iguales a S/ ${SUNAT_LIMITE_BOLETA} es obligatorio identificar al cliente con su DNI/CE.`
+                        );
+                        return;
+                    }
+                }
+
+                // 🔥 CORREGIDO: Ahora valida correctamente si es RUC para clientes jurídicos
+                if (tipoComprobante === 'factura' && (clienteSeleccionado == "1" ||
+                        tipoDocumentoCliente !== 'RUC')) {
+                    alert(
+                        '🚨 Regla SUNAT: Las Facturas solo pueden ser emitidas a clientes registrados con un número de RUC válido de 11 dígitos.'
+                    );
+                    return;
+                }
+
+                // Validación de carrito vacío
+                const listaProductos = window.carrito || [];
+                if (listaProductos.length === 0) {
+                    alert('🚨 Error: No puedes registrar una venta con el carrito vacío.');
+                    return;
+                }
+
+                // Creamos una bandera de control de red por defecto
+                let estaOnline = navigator.onLine;
+
+                // --- TRUCO DEFINITIVO PARA PWA ---
+                if (estaOnline) {
+                    try {
+                        // Intentamos descargar un elemento mínimo añadiendo un timestamp para evitar el caché
+                        await fetch('/favicon.ico', {
+                            method: 'HEAD',
+                            cache: 'no-store'
+                        });
+                        estaOnline = true; // El servidor respondió, hay internet real
+                        console.log("En Linea");
+                    } catch (error) {
+                        estaOnline =
+                            false; // La petición falló: estamos realmente offline en la PWA
+                    }
+                }
+
+                // 2. Ahora evaluamos la conexión real comprobada
+                if (estaOnline) {
+                    console.log(
+                        "🟢 Conexión confirmada. Enviando venta de forma directa al servidor..."
+                    );
+
+                    // Desactivamos temporalmente el listener para enviar el formulario nativamente a Laravel sin bucles
+                    HTMLFormElement.prototype.submit.call(this);
+                } else {
+                    console.log(
+                        "🔴 Modo offline real detectado por fallo de red. Guardando en IndexedDB..."
+                    );
+
+                    // Estructuramos el JSON limpio con tu arquitectura de datos offline
+                    const datosVentaOffline = {
+                        cliente_id: clienteSeleccionado,
+                        tipo_comprobante: tipoComprobante,
+                        metodo_pago_id: document.querySelector('select[name="metodo_pago_id"]')
+                            ?.value || "1",
+                        subtotal: document.getElementById('subtotalInput')?.value || "0.00",
+                        igv: document.getElementById('igvInput')?.value || "0.00",
+                        total: totalInput ? totalInput.value : "0.00",
+                        productos: listaProductos.map(item => ({
+                            id: item.id,
+                            cantidad: item.cantidad,
+                            precio_unitario: item.precio
+                        }))
+                    };
+
+                    // Guardado oficial en tu base de datos de IndexedDB (LaEconomicaOfflineDB)
+                    if (typeof guardarVentaOffline === 'function') {
+                        try {
+                            await guardarVentaOffline(datosVentaOffline);
+
+                            // Registramos la tarea de sincronización de fondo si el Service Worker está listo
+                            if ('serviceWorker' in navigator && 'SyncManager' in window) {
+                                const registration = await navigator.serviceWorker.ready;
+                                await registration.sync.register('sincronizar-ventas');
+                                console.log('🔄 Sincronización registrada en el Service Worker.');
+                            }
+
+                            alert(
+                                "📦 ¡Venta guardada localmente de forma segura en modo Offline! Se procesará automáticamente cuando vuelva el internet."
+                            );
+
+                            if (typeof limpiarFormularioVenta === 'function') {
+                                limpiarFormularioVenta();
+                            }
+                        } catch (errDB) {
+                            console.error("🚨 Error al insertar en IndexedDB:", errDB);
+                            alert("🚨 No se pudo resguardar la venta en la base de datos local.");
+                        }
+                    } else {
+                        alert(
+                            '🚨 Error crítico: El archivo de base de datos offline (offline-db.js) no se cargó correctamente.'
+                        );
+                    }
+                }
+            });
+        }
+    });
+
+    window.actualizarCantidad = actualizarCantidad;
+    window.eliminarProducto = eliminarProducto;
+    window.limpiarFormularioVenta = limpiarFormularioVenta;
 </script>

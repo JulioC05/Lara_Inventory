@@ -15,21 +15,31 @@
             <li class="nav-item lh-1 me-4">
                 <span></span>
             </li>
+            <!-- Indicador de Red Estilo Sneat -->
+            <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1" id="li-status-conexion">
+                <div id="status-conexion-pwa"
+                    class="badge bg-label-success d-flex align-items-center gap-1 py-2 px-3 m-1 cursor-pointer fw-semibold shadow-sm"
+                    style="transition: all 0.3s ease;">
+                    <i id="icono-conexion" class="bx bx-wifi font-medium-3"></i>
+                    <span id="texto-conexion" class="d-none d-md-inline">En Línea</span>
+                </div>
+            </li>
+
 
             <!-- User -->
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown"
                     aria-expanded="false">
                     <div class="avatar avatar-online">
-                         @if (auth()->user()->avatar &&
-                                                auth()->user()->avatar !== 'avatars/default.png' &&
-                                                Storage::disk('public')->exists(auth()->user()->avatar))
+                        @if (auth()->user()->avatar &&
+                                auth()->user()->avatar !== 'avatars/default.png' &&
+                                Storage::disk('public')->exists(auth()->user()->avatar))
                             <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="user-avatar"
                                 class="rounded-circle w-px-40 h-px-40" style="object-fit: cover;">
                         @else
                             <div class="avatar avatar-online me-2">
                                 <span class="avatar-initial rounded-circle bg-label-primary fw-semibold fs-5">
-                                    {{auth()->user()->iniciales }}
+                                    {{ auth()->user()->iniciales }}
                                 </span>
                             </div>
                         @endif
@@ -45,8 +55,9 @@
                                         @if (auth()->user()->avatar &&
                                                 auth()->user()->avatar !== 'avatars/default.png' &&
                                                 Storage::disk('public')->exists(auth()->user()->avatar))
-                                            <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="user-avatar"
-                                                class="rounded-circle w-px-40 h-px-40" style="object-fit: cover;">
+                                            <img src="{{ asset('storage/' . auth()->user()->avatar) }}"
+                                                alt="user-avatar" class="rounded-circle w-px-40 h-px-40"
+                                                style="object-fit: cover;">
                                         @else
                                             <div class="avatar avatar-online me-2">
                                                 <span

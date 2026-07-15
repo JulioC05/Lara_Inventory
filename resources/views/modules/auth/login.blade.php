@@ -21,7 +21,7 @@
                         <!-- /Logo -->
                         <p class="mb-6">Login de usuario</p>
 
-                        <form class="needs-validation mb-6" novalidate method="POST" action="{{ route('logear') }}">
+                        <form class="needs-validation mb-6" novalidate method="POST" action="{{ route('logear') }}" id="loginForm">
                             @csrf
                             <div class="mb-6">
                                 <label class="form-label" for="bs-validation-email">Email</label>
