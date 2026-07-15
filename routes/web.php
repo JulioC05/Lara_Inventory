@@ -17,6 +17,11 @@ use App\Http\Controllers\UsuarioController;
 use App\Notifications\TestNotification;
 use Illuminate\Support\Facades\Route;
 
+// Ruta pública exclusiva para la validación e instalación de la PWA
+Route::get('/instalar', function () {
+    return view('pwa.instalar');
+})->name('pwa.instalar');
+
 Route::get('/', [AuthController::class, 'index'])->name('login');
 Route::get('/olvido-contrasena', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('/olvido-contrasena', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
