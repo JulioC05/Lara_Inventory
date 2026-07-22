@@ -24,9 +24,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrapFive();
         //Cambiamos a 'pinggy-free.link' para que coincida exactamente con tu túnel
-        if (str_contains(request()->getHost(), 'pinggy-free.link')) {
-            \Illuminate\Support\Facades\URL::forceScheme('https');
-        }
+        // if (str_contains(request()->getHost(), 'pinggy-free.link')) {
+        //     \Illuminate\Support\Facades\URL::forceScheme('https');
+        // }
 
         // 🚀 Interceptamos el correo para meterle el estilo de Sneat
         ResetPassword::toMailUsing(function (object $notifiable, string $token) {
