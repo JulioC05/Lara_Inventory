@@ -10,11 +10,10 @@
         openOnFocus: true,
         valueField: 'value',
         labelField: 'text',
-        dataAttr: 'data-*', // Absorbe todos los data-* del HTML una sola vez
+        dataAttr: 'data-*', // Absorbe todos los data-* del HTML
 
         render: {
             option: function(data, escape) {
-                // Si la imagen viene como string "undefined" o vacía, ponemos la de respaldo
                 const imagen = (data.imagen && data.imagen !== 'undefined') ? data.imagen : '/images/no-image.png';
                 const precioCompra = data.precio || '0.00';
 
@@ -29,8 +28,7 @@
             }
         },
         onChange: function(value) {
-            // FLUJO AUTOMÁTICO MANUAL (WEB): 
-            // Al seleccionar por clic/enter, se llama a agregarProducto con esEscaner = false (por defecto)
+            // Al seleccionar manualmente por click o enter en la web, agrega el producto en silencio
             if (value) {
                 agregarProducto(value);
             }
@@ -43,22 +41,18 @@
     const btnGuardarCompra = document.getElementById('btn-guardar-compra');
 
     // =========================================================================
-    // 2. AGREGAR PRODUCTO AUTOMÁTICAMENTE
+    // 2. AGREGAR PRODUCTO A LA TABLA
     // =========================================================================
-    // El parámetro esEscaner evita que la alerta Toast se muestre en selección manual desde PC/Web
-    function agregarProducto(productoId, esEscaner = false) {
+    function agregarProducto(productoId) {
         if (!productoId) return;
 
-        // SEGURIDAD: Jalamos el producto directamente de la memoria interna de TomSelect
         const itemData = productoTom.options[productoId];
         if (!itemData) return;
 
         const nombre = itemData.text;
-        // Jalamos los atributos data-* mapeados por TomSelect (se convierten a minúsculas)
         const precioCosto = parseFloat(itemData.precio) || 0.00;
-        const codigoBarras = itemData.codigo || '';
 
-        // Validar si el artículo ya está en la lista de compra para incrementar cantidad
+        // Validar si el artículo ya está en la lista para incrementar la cantidad
         const existente = carrito.find(item => item.id == productoId);
 
         if (existente) {
@@ -67,33 +61,16 @@
             carrito.push({
                 id: productoId,
                 nombre: nombre,
-                precio: precioCosto, // Permite que empiece con el último costo registrado
+                precio: precioCosto,
                 cantidad: 1,
             });
         }
 
         renderCarrito();
 
-        // =========================================================================
-        // MOSTRAR TOAST SNEAT ÚNICAMENTE SI LA ACCIÓN VIENE DEL ESCÁNER DE CÁMARA
-        // =========================================================================
-        if (esEscaner) {
-            const scanToastEl = document.getElementById('scanSuccessToast');
-            const toastBody = document.getElementById('scanToastBody');
-
-            if (scanToastEl && toastBody) {
-                toastBody.innerHTML = `<strong>${nombre}</strong><br><span class="badge bg-white text-success mt-1">Costo: S/ ${precioCosto.toFixed(2)}</span>`;
-
-                const toast = new bootstrap.Toast(scanToastEl);
-                toast.show();
-            }
-        }
-
-        // LIMPIAR SELECT AUTOMÁTICAMENTE: 
-        // Usamos un pequeño delay (setTimeout) para que TomSelect complete su ciclo interno 
-        // de cambio antes de forzar la limpieza, evitando que se quede congelado.
+        // LIMPIAR SELECT AUTOMÁTICAMENTE
         setTimeout(() => {
-            productoTom.clear(true); // El argumento true evita disparar el onChange infinitamente
+            productoTom.clear(true); // Evita ciclos infinitos de onChange
         }, 50);
     }
 
@@ -153,7 +130,7 @@
                     </td>
                 </tr>`;
 
-            // Inputs ocultos para enviar al controlador de Laravel de forma limpia
+            // Inputs ocultos para enviar a Laravel
             if (productosContainer) {
                 productosContainer.innerHTML += `
                     <input type="hidden" name="productos[]" value="${producto.id}">
@@ -194,10 +171,4 @@
         document.getElementById('txt-igv').innerText = 'S/ 0.00';
         document.getElementById('txt-total').innerText = 'S/ 0.00';
     }
-
-    // =========================================================================
-    // 4. EJEMPLO DE INTEGRACIÓN CON EL ESCÁNER DE CÁMARA (Html5Qrcode)
-    // =========================================================================
-    // Recuerda que en el callback exitoso de tu escáner debes invocar:
-    // agregarProducto(idProductoEncontrado, true);
 </script>

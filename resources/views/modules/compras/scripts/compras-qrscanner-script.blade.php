@@ -6,17 +6,19 @@
         let html5QrCode = null;
         let escaneoBloqueado = false;
 
-        scannerToggle.addEventListener('change', async function() {
-            if (this.checked) {
-                if (esMovil) {
-                    iniciarScannerCamara();
+        if (scannerToggle) {
+            scannerToggle.addEventListener('change', async function() {
+                if (this.checked) {
+                    if (esMovil) {
+                        iniciarScannerCamara();
+                    } else {
+                        activarScannerPistola();
+                    }
                 } else {
-                    activarScannerPistola();
+                    detenerScanner();
                 }
-            } else {
-                detenerScanner();
-            }
-        });
+            });
+        }
 
         function activarScannerPistola() {
             // Buscamos la barra de búsqueda interna de TomSelect
@@ -24,39 +26,10 @@
             if (!tomInput) return;
 
             tomInput.focus();
-            productoTom.close(); // Cierra el menú desplegable para no tapar la pantalla
+            if (typeof productoTom !== 'undefined') {
+                productoTom.close(); // Cierra el menú desplegable para no tapar la pantalla
+            }
         }
-
-        // async function iniciarScannerCamara() {
-        //     try {
-        //         let reader = document.getElementById('reader');
-        //         if (!reader) {
-        //             reader = document.createElement('div');
-        //             reader.id = 'reader';
-        //             reader.classList.add('mt-3', 'rounded');
-        //             document.querySelector('.scanner-container').appendChild(reader);
-        //         }
-
-        //         html5QrCode = new Html5Qrcode('reader');
-
-        //         await html5QrCode.start({
-        //                 facingMode: 'environment'
-        //             }, // Usa la cámara trasera
-        //             {
-        //                 fps: 10,
-        //                 qrbox: {
-        //                     width: 250,
-        //                     height: 250
-        //                 }
-        //             },
-        //             onScanSuccess
-        //         );
-        //     } catch (error) {
-        //         console.error(error);
-        //         scannerToggle.checked = false;
-        //         alert('No se pudo acceder a la cámara: ' + error);
-        //     }
-        // }
 
         async function iniciarScannerCamara() {
             try {
@@ -100,14 +73,13 @@
                     errStr.includes('permissiondeniederror') ||
                     errStr.includes('notallowed')
                 ) {
-                    // Mostrar modal educativo de como desbloquear la cámara
+                    // Mostrar modal educativo de cómo desbloquear la cámara
                     const modalEl = document.getElementById('cameraPermissionModal');
                     if (modalEl) {
                         const modal = new bootstrap.Modal(modalEl);
                         modal.show();
                     } else {
-                        alert(
-                            'Acceso a la cámara denegado. Habilita el permiso desde la configuración de tu dispositivo.');
+                        alert('Acceso a la cámara denegado. Habilita el permiso desde la configuración de tu dispositivo.');
                     }
                 } else {
                     // Error técnico alternativo (ej. la cámara está siendo usada por otra App)
@@ -115,18 +87,15 @@
                     const toastBody = document.getElementById('scanToastBody');
 
                     if (scanToastEl && toastBody) {
-                        // Cambiamos temporalmente el color a peligro para el error
                         scanToastEl.classList.remove('bg-success');
                         scanToastEl.classList.add('bg-danger');
 
-                        toastBody.innerHTML =
-                            `<strong>Error de Cámara:</strong><br><small>No se pudo iniciar el dispositivo de video.</small>`;
+                        toastBody.innerHTML = `<strong>Error de Cámara:</strong><br><small>No se pudo iniciar el dispositivo de video.</small>`;
 
                         const toast = new bootstrap.Toast(scanToastEl);
                         toast.show();
                     } else {
-                        alert(
-                            'No se pudo acceder a la cámara. Verifica que no esté siendo usada por otra app.');
+                        alert('No se pudo acceder a la cámara. Verifica que no esté siendo usada por otra app.');
                     }
                 }
             }
@@ -139,14 +108,14 @@
 
             buscarProductoPorCodigo(decodedText);
 
-            // Cooldown de 2 segundos entre lecturas de botellas
+            // Cooldown de 2 segundos entre lecturas
             setTimeout(() => {
                 escaneoBloqueado = false;
             }, 2000);
         }
 
         function buscarProductoPorCodigo(codigo) {
-            // Convertimos las opciones de tu select de compras en array para buscar por dataset
+            // Convertimos las opciones del select en array para buscar por dataset
             const option = Array.from(
                 document.querySelectorAll('#productoSelect option')
             ).find(opt =>
@@ -154,12 +123,33 @@
             );
 
             if (!option) {
-                console.warn('Código de barras no registrado en licores:', codigo);
+                console.warn('Código de barras no registrado:', codigo);
                 return;
             }
 
-            // Añadir el producto encontrado directamente al carrito de compras
-            agregarProducto(option.value);
+            const nombre = option.text;
+            const precioCosto = parseFloat(option.dataset.precio) || 0.00;
+
+            // =========================================================================
+            // MOSTRAR TOAST SNEAT (CONFIRMACIÓN DE ESCANEO EXITOSO)
+            // =========================================================================
+            const scanToastEl = document.getElementById('scanSuccessToast');
+            const toastBody = document.getElementById('scanToastBody');
+
+            if (scanToastEl && toastBody) {
+                scanToastEl.classList.remove('bg-danger');
+                scanToastEl.classList.add('bg-success');
+
+                toastBody.innerHTML = `<strong>${nombre}</strong><br><span class="badge bg-white text-success mt-1">Costo: S/ ${precioCosto.toFixed(2)}</span>`;
+
+                const toast = new bootstrap.Toast(scanToastEl);
+                toast.show();
+            }
+
+            // Añadir el producto encontrado directamente al carrito
+            if (typeof agregarProducto === 'function') {
+                agregarProducto(option.value);
+            }
 
             // Limpieza del input de escritorio por si quedó texto residual de la pistola
             const tomInput = document.querySelector('.ts-control input');
