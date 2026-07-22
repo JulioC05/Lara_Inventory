@@ -134,7 +134,7 @@
 
                             <div class="mt-4">
                                 <button type="submit" class="btn btn-primary me-2">Guardar Cambios</button>
-                                <a href="{{ route('ventas.index') }}" class="btn btn-outline-secondary">Cancelar</a>
+                                <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary">Cancelar</a>
                             </div>
                         </div>
                     </form>

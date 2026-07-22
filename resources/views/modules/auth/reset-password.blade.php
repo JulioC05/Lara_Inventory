@@ -22,7 +22,7 @@
                             <div class="mb-6">
                                 <label class="form-label">Nueva Contraseña</label>
                                 <input type="password" name="password" class="form-control"
-                                    placeholder="Mínimo 6 caracteres" required />
+                                    placeholder="Mínimo 8 caracteres" required />
                             </div>
 
                             <div class="mb-6">

@@ -58,7 +58,27 @@ class ForgotPasswordController extends Controller
         $request->validate([
             'token' => 'required',
             'email' => 'required|email|exists:users,email',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => [
+                'required',
+                'confirmed',
+                \Illuminate\Validation\Rules\Password::min(8)
+                    ->letters()
+                    ->numbers()
+                    ->mixedCase()
+                    ->uncompromised()
+            ],
+        ], [
+            'token.required' => 'El token de recuperación es inválido o ha expirado.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Ingresa un correo electrónico válido.',
+            'email.exists' => 'No encontramos ningún usuario con este correo electrónico.',
+            'password.required' => 'La nueva contraseña es obligatoria.',
+            'password.confirmed' => 'La confirmación de la contraseña no coincide.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            // 'password.letters' => 'La contraseña debe contener al menos una letra.',
+            // 'password.numbers' => 'La contraseña debe contener al menos un número.',
+            // 'password.mixed_case' => 'La contraseña debe incluir mayúsculas y minúsculas.',
+            // 'password.uncompromised' => 'Esta contraseña es demasiado fácil o común. Por favor elige otra más segura.',
         ]);
 
         $status = Password::reset(

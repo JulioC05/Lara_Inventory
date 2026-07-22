@@ -30,16 +30,30 @@ class ProfileController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'current_password' => ['nullable', 'required_with:new_password'],
-            'new_password' => ['nullable', 'confirmed', Password::min(8)->letters()->numbers()],
+            'new_password' => [
+                'nullable',
+                'confirmed',
+                Password::min(8)
+                    ->letters()
+                    ->numbers()
+                    ->mixedCase()
+                    ->uncompromised() // Bloquea contraseñas débiles o filtradas comunes (ej: 12345678)
+            ],
         ], [
             'name.required' => 'El nombre es obligatorio.',
             'avatar.image' => 'El archivo seleccionado debe ser una imagen válida.',
             'avatar.mimes' => 'La foto debe ser en formato JPG, JPEG o PNG.',
             'avatar.max' => 'La imagen no debe pesar más de 2MB.',
             'current_password.required_with' => 'Ingresa tu contraseña actual para cambiarla.',
-            'new_password.confirmed' => 'La confirmación de la contraseña no coincide.',
-            'new_password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
-        ]);
+
+            // 'new_password.confirmed' => 'La confirmación de la contraseña no coincide.',
+            // 'new_password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
+            // 'new_password.letters' => 'La nueva contraseña debe contener al menos una letra.',
+            // 'new_password.numbers' => 'La nueva contraseña debe contener al menos un número.',
+            // // 'new_password.mixed_case' => 'La nueva contraseña debe incluir mayúsculas y minúsculas.',
+            // 'new_password.mixed' => 'La nueva contraseña debe incluir mayúsculas y minúsculas.',
+            // 'new_password.uncompromised' => 'Esta contraseña es muy fácil o ha sido filtrada. Por favor elige una más segura.',
+        ]); 
 
         // Variable de control para monitorear cambios reales
         $cambioEfectuado = false;

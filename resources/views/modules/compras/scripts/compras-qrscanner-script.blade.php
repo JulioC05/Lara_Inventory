@@ -27,6 +27,37 @@
             productoTom.close(); // Cierra el menú desplegable para no tapar la pantalla
         }
 
+        // async function iniciarScannerCamara() {
+        //     try {
+        //         let reader = document.getElementById('reader');
+        //         if (!reader) {
+        //             reader = document.createElement('div');
+        //             reader.id = 'reader';
+        //             reader.classList.add('mt-3', 'rounded');
+        //             document.querySelector('.scanner-container').appendChild(reader);
+        //         }
+
+        //         html5QrCode = new Html5Qrcode('reader');
+
+        //         await html5QrCode.start({
+        //                 facingMode: 'environment'
+        //             }, // Usa la cámara trasera
+        //             {
+        //                 fps: 10,
+        //                 qrbox: {
+        //                     width: 250,
+        //                     height: 250
+        //                 }
+        //             },
+        //             onScanSuccess
+        //         );
+        //     } catch (error) {
+        //         console.error(error);
+        //         scannerToggle.checked = false;
+        //         alert('No se pudo acceder a la cámara: ' + error);
+        //     }
+        // }
+
         async function iniciarScannerCamara() {
             try {
                 let reader = document.getElementById('reader');
@@ -52,9 +83,52 @@
                     onScanSuccess
                 );
             } catch (error) {
-                console.error(error);
-                scannerToggle.checked = false;
-                alert('No se pudo acceder a la cámara: ' + error);
+                console.error('Error al iniciar cámara:', error);
+
+                // 1. Desactivar el switch para que no quede como 'encendido'
+                if (scannerToggle) {
+                    scannerToggle.checked = false;
+                }
+
+                // 2. Convertir el error a string para evaluarlo
+                const errStr = String(error).toLowerCase();
+
+                // 3. Evaluar si fue un bloqueo explícito de permisos
+                if (
+                    errStr.includes('notallowederror') ||
+                    errStr.includes('permission denied') ||
+                    errStr.includes('permissiondeniederror') ||
+                    errStr.includes('notallowed')
+                ) {
+                    // Mostrar modal educativo de como desbloquear la cámara
+                    const modalEl = document.getElementById('cameraPermissionModal');
+                    if (modalEl) {
+                        const modal = new bootstrap.Modal(modalEl);
+                        modal.show();
+                    } else {
+                        alert(
+                            'Acceso a la cámara denegado. Habilita el permiso desde la configuración de tu dispositivo.');
+                    }
+                } else {
+                    // Error técnico alternativo (ej. la cámara está siendo usada por otra App)
+                    const scanToastEl = document.getElementById('scanSuccessToast');
+                    const toastBody = document.getElementById('scanToastBody');
+
+                    if (scanToastEl && toastBody) {
+                        // Cambiamos temporalmente el color a peligro para el error
+                        scanToastEl.classList.remove('bg-success');
+                        scanToastEl.classList.add('bg-danger');
+
+                        toastBody.innerHTML =
+                            `<strong>Error de Cámara:</strong><br><small>No se pudo iniciar el dispositivo de video.</small>`;
+
+                        const toast = new bootstrap.Toast(scanToastEl);
+                        toast.show();
+                    } else {
+                        alert(
+                            'No se pudo acceder a la cámara. Verifica que no esté siendo usada por otra app.');
+                    }
+                }
             }
         }
 

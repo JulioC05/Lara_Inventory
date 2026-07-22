@@ -253,25 +253,80 @@
         |--------------------------------------------------------------------------
         */
 
+        // function buscarProductoPorCodigo(codigo) {
+        //     const option = Array.from(
+
+        //         document.querySelectorAll(
+        //             '#productoSelect option'
+        //         )
+
+        //     ).find(option =>
+
+        //         String(
+        //             option.dataset.codigo
+        //         ).trim()
+
+        //         ===
+
+        //         String(
+        //             codigo
+        //         ).trim()
+
+        //     );
+
+        //     /*
+        //     |--------------------------------------------------------------------------
+        //     | NO ENCONTRADO
+        //     |--------------------------------------------------------------------------
+        //     */
+
+        //     if (!option) {
+        //         console.warn(
+        //             'Producto no encontrado:',
+        //             codigo
+        //         );
+
+        //         return;
+        //     }
+
+        //     /*
+        //     |--------------------------------------------------------------------------
+        //     | AGREGAR PRODUCTO
+        //     |--------------------------------------------------------------------------
+        //     */
+
+        //     alert('PRODUCTO ENCONTRADO');
+
+        //     // console.log(option);
+
+        //     agregarProducto(
+        //         option.value
+        //     );
+        //     // productoSelect.trigger(
+        //     //     'change'
+        //     // );
+
+        //     /*
+        //     |--------------------------------------------------------------------------
+        //     | LIMPIAR INPUT DESKTOP
+        //     |--------------------------------------------------------------------------
+        //     */
+
+        //     const tomInput = document.querySelector(
+        //         '.ts-control input'
+        //     );
+
+        //     if (tomInput) {
+        //         tomInput.value = '';
+        //     }
+        // }
+
+
         function buscarProductoPorCodigo(codigo) {
             const option = Array.from(
-
-                document.querySelectorAll(
-                    '#productoSelect option'
-                )
-
+                document.querySelectorAll('#productoSelect option')
             ).find(option =>
-
-                String(
-                    option.dataset.codigo
-                ).trim()
-
-                ===
-
-                String(
-                    codigo
-                ).trim()
-
+                String(option.dataset.codigo).trim() === String(codigo).trim()
             );
 
             /*
@@ -281,12 +336,31 @@
             */
 
             if (!option) {
-                console.warn(
-                    'Producto no encontrado:',
-                    codigo
-                );
-
+                console.warn('Producto no encontrado:', codigo);
                 return;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | MOSTRAR TOAST DE SNEAT CON JS
+            |--------------------------------------------------------------------------
+            */
+
+            const nombreProducto = option.dataset.nombre || option.textContent.trim();
+            const precioProducto = option.dataset.precio ?
+                `S/ ${parseFloat(option.dataset.precio).toFixed(2)}` : '';
+
+            const scanToastEl = document.getElementById('scanSuccessToast');
+            const toastBody = document.getElementById('scanToastBody');
+
+            if (scanToastEl && toastBody) {
+                // Inyectamos el texto dinámicamente
+                toastBody.innerHTML =
+                    `<strong>${nombreProducto}</strong><br><span class="badge bg-white text-success mt-1">${precioProducto}</span>`;
+
+                // Instanciamos y mostramos el Toast con el objeto de Bootstrap
+                const toast = new bootstrap.Toast(scanToastEl);
+                toast.show();
             }
 
             /*
@@ -295,16 +369,7 @@
             |--------------------------------------------------------------------------
             */
 
-            alert('PRODUCTO ENCONTRADO');
-
-            // console.log(option);
-
-            agregarProducto(
-                option.value
-            );
-            // productoSelect.trigger(
-            //     'change'
-            // );
+            agregarProducto(option.value);
 
             /*
             |--------------------------------------------------------------------------
@@ -312,10 +377,7 @@
             |--------------------------------------------------------------------------
             */
 
-            const tomInput = document.querySelector(
-                '.ts-control input'
-            );
-
+            const tomInput = document.querySelector('.ts-control input');
             if (tomInput) {
                 tomInput.value = '';
             }

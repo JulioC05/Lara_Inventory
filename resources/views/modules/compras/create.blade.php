@@ -16,7 +16,7 @@
                     <div class="card h-100">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Datos del Pedido</h5>
-                            <span class="badge bg-label-primary">Paso 1</span>
+                            {{-- <span class="badge bg-label-primary">Paso 1</span> --}}
                         </div>
                         <div class="card-body">
                             <div class="mb-3">

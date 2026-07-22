@@ -152,3 +152,22 @@
     });
 </script>
 @endif
+
+{{-- TOAST DINÁMICO PARA JAVASCRIPT (ESCANER) --}}
+<div class="bs-toast toast toast-placement-ex m-2 fade bg-success top-0 end-0 hide"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+    data-bs-delay="2500"
+    id="scanSuccessToast">
+
+    <div class="toast-header">
+        <i class="bx bx-check-circle me-2 text-success"></i>
+        <div class="me-auto fw-semibold">Producto Escaneado</div>
+        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+    </div>
+
+    <div class="toast-body" id="scanToastBody">
+        <!-- El contenido se inyectará dinámicamente desde JS -->
+    </div>
+</div>

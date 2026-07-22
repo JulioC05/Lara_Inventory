@@ -53,7 +53,7 @@
         if (!itemData) return;
 
         const nombre = itemData.text;
-        // Jalamos los atributos data-* mapeados por TomSelect (nota cómo se vuelven minúsculas)
+        // Jalamos los atributos data-* mapeados por TomSelect (se convierten a minúsculas)
         const precioCosto = parseFloat(itemData.precio) || 0.00;
         const codigoBarras = itemData.codigo || '';
 
@@ -72,6 +72,19 @@
         }
 
         renderCarrito();
+
+        // =========================================================================
+        // MOSTRAR TOAST SNEAT CON EL NOMBRE Y COSTO DEL PRODUCTO
+        // =========================================================================
+        const scanToastEl = document.getElementById('scanSuccessToast');
+        const toastBody = document.getElementById('scanToastBody');
+
+        if (scanToastEl && toastBody) {
+            toastBody.innerHTML = `<strong>${nombre}</strong><br><span class="badge bg-white text-success mt-1">Costo: S/ ${precioCosto.toFixed(2)}</span>`;
+
+            const toast = new bootstrap.Toast(scanToastEl);
+            toast.show();
+        }
 
         // LIMPIAR SELECT AUTOMÁTICAMENTE: 
         // Usamos un pequeño delay (setTimeout) para que TomSelect complete su ciclo interno 
