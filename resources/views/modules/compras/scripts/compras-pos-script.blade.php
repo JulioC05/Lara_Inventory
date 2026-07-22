@@ -15,8 +15,7 @@
         render: {
             option: function(data, escape) {
                 // Si la imagen viene como string "undefined" o vacía, ponemos la de respaldo
-                const imagen = (data.imagen && data.imagen !== 'undefined') ? data.imagen :
-                    '/images/no-image.png';
+                const imagen = (data.imagen && data.imagen !== 'undefined') ? data.imagen : '/images/no-image.png';
                 const precioCompra = data.precio || '0.00';
 
                 return `
@@ -30,7 +29,8 @@
             }
         },
         onChange: function(value) {
-            // FLUJO AUTOMÁTICO: En cuanto cambia el valor (clic, enter o escáner), se agrega al "carrito"
+            // FLUJO AUTOMÁTICO MANUAL (WEB): 
+            // Al seleccionar por clic/enter, se llama a agregarProducto con esEscaner = false (por defecto)
             if (value) {
                 agregarProducto(value);
             }
@@ -45,7 +45,8 @@
     // =========================================================================
     // 2. AGREGAR PRODUCTO AUTOMÁTICAMENTE
     // =========================================================================
-    function agregarProducto(productoId) {
+    // El parámetro esEscaner evita que la alerta Toast se muestre en selección manual desde PC/Web
+    function agregarProducto(productoId, esEscaner = false) {
         if (!productoId) return;
 
         // SEGURIDAD: Jalamos el producto directamente de la memoria interna de TomSelect
@@ -74,16 +75,18 @@
         renderCarrito();
 
         // =========================================================================
-        // MOSTRAR TOAST SNEAT CON EL NOMBRE Y COSTO DEL PRODUCTO
+        // MOSTRAR TOAST SNEAT ÚNICAMENTE SI LA ACCIÓN VIENE DEL ESCÁNER DE CÁMARA
         // =========================================================================
-        const scanToastEl = document.getElementById('scanSuccessToast');
-        const toastBody = document.getElementById('scanToastBody');
+        if (esEscaner) {
+            const scanToastEl = document.getElementById('scanSuccessToast');
+            const toastBody = document.getElementById('scanToastBody');
 
-        if (scanToastEl && toastBody) {
-            toastBody.innerHTML = `<strong>${nombre}</strong><br><span class="badge bg-white text-success mt-1">Costo: S/ ${precioCosto.toFixed(2)}</span>`;
+            if (scanToastEl && toastBody) {
+                toastBody.innerHTML = `<strong>${nombre}</strong><br><span class="badge bg-white text-success mt-1">Costo: S/ ${precioCosto.toFixed(2)}</span>`;
 
-            const toast = new bootstrap.Toast(scanToastEl);
-            toast.show();
+                const toast = new bootstrap.Toast(scanToastEl);
+                toast.show();
+            }
         }
 
         // LIMPIAR SELECT AUTOMÁTICAMENTE: 
@@ -191,4 +194,10 @@
         document.getElementById('txt-igv').innerText = 'S/ 0.00';
         document.getElementById('txt-total').innerText = 'S/ 0.00';
     }
+
+    // =========================================================================
+    // 4. EJEMPLO DE INTEGRACIÓN CON EL ESCÁNER DE CÁMARA (Html5Qrcode)
+    // =========================================================================
+    // Recuerda que en el callback exitoso de tu escáner debes invocar:
+    // agregarProducto(idProductoEncontrado, true);
 </script>
